@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Screen Time Check, by OneRevel</title>
+<style>
+:root{
+  --ink:#161A18;
+  --ink2:#242826;
+  --ink3:#2F3231;
+  --line-dark:#3C413E;
+  --paper:#F2F3F1;
+  --card:#FFFFFF;
+  --green:#6AB432;
+  --green-b:#7FCB42;
+  --green-d:#4E8A22;
+  --green-wash:#EDF6E5;
+  --grey:#8A918D;
+  --grey-l:#C6CCC8;
+  --grey-xl:#E3E7E4;
+  --text:#161A18;
+  --muted:#5D6562;
+  --amber:#B8860B;
+  --red:#9A3B1E;
+  --radius:14px;
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--text);
+  font-family:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%}
+button{font-family:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.hide{display:none !important}
+
+/* ---------- type ---------- */
+.display{
+  font-weight:800;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;
+  margin:0;
+}
+h1.display{font-size:clamp(31px,4.4vw,54px)}
+h2.sec{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-0.02em;line-height:1.02;margin:0 0 10px;text-transform:uppercase}
+h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin:0 0 8px;line-height:1.25}
+h4{font-size:15px;font-weight:700;margin:0 0 6px;line-height:1.3}
+p{margin:0 0 12px}
+.lede{font-size:clamp(16px,1.6vw,19px);color:var(--muted);line-height:1.55;margin:0 0 16px;max-width:64ch}
+.eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--green-d);margin:0 0 10px;
+}
+.eyebrow.on-dark{color:var(--green-b)}
+.small{font-size:13px;color:var(--muted);line-height:1.5}
+.tiny{font-size:12px;color:var(--muted);line-height:1.5}
+.strong{font-weight:700;color:var(--text)}
+
+/* ---------- home ---------- */
+.home-top{
+  background:var(--ink);color:#fff;position:relative;overflow:hidden;
+  padding:0 0 46px;
+}
+.dotfield{
+  position:absolute;inset:0;opacity:0.5;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1.2px);
+  background-size:7px 7px;
+}
+.navbar{
+  position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:18px 0 0;
+}
+.brandmark{display:flex;align-items:center;gap:10px;min-width:0}
+.brandmark .mk{width:26px;height:26px;flex:none}
+.brandmark .nm{font-weight:800;font-size:19px;letter-spacing:-0.02em;color:var(--green-b)}
+.navpill{
+  font-size:11px;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.28);border-radius:999px;padding:7px 14px;color:#fff;
+  white-space:nowrap;
+}
+.hero-grid{
+  position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);
+  gap:26px;padding-top:40px;
+}
+@media(min-width:960px){
+  .hero-grid{grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr);gap:38px;align-items:start;padding-top:52px}
+}
+.hero-copy h1{color:#fff}
+.hero-copy h1 .g{color:var(--green-b)}
+.hero-lede{color:rgba(255,255,255,0.80);font-size:clamp(15px,1.5vw,18px);line-height:1.55;margin:16px 0 0;max-width:46ch}
+.hero-claim{
+  margin:20px 0 0;padding:14px 16px;border-left:3px solid var(--green);
+  background:rgba(106,180,50,0.10);border-radius:0 10px 10px 0;
+}
+.hero-claim p{margin:0;color:rgba(255,255,255,0.92);font-size:14px;line-height:1.55}
+.hero-claim .who{display:block;margin-top:7px;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--green-b);font-weight:700}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:24px}
+.btn{
+  display:inline-block;border:0;cursor:pointer;border-radius:999px;
+  padding:14px 26px;font-size:14px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;
+  background:var(--green);color:#10230A;transition:background .15s ease;
+}
+.btn:hover{background:var(--green-b)}
+.btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.32)}
+.btn.ghost:hover{background:rgba(255,255,255,0.08)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.dark:hover{background:var(--ink3)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.cta-note{font-size:12.5px;color:rgba(255,255,255,0.58);margin:12px 0 0}
+
+/* hero figure */
+.figbox{
+  background:var(--ink2);border:1px solid var(--line-dark);border-radius:16px;
+  padding:16px 16px 14px;position:relative;z-index:2;
+}
+.fighead{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.figread{font-size:12px;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.58);font-weight:700}
+.figread b{color:var(--green-b);font-size:15px;display:block;letter-spacing:-0.01em;text-transform:none;margin-top:2px}
+.figcap{font-size:12.5px;color:rgba(255,255,255,0.62);line-height:1.5;margin:10px 0 0}
+.figcap b{color:#fff}
+.sliderow{margin-top:12px}
+.sliderow label{display:block;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);font-weight:700;margin-bottom:6px}
+input[type=range]{width:100%;accent-color:var(--green);height:22px}
+
+/* facts strip */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);border-radius:12px;overflow:hidden;margin-top:26px;position:relative;z-index:2}
+.fact{background:var(--ink2);padding:14px 15px}
+.fact b{display:block;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--green-b);line-height:1.1}
+.fact span{display:block;font-size:11.5px;color:rgba(255,255,255,0.58);margin-top:4px;line-height:1.4}
+
+/* home body */
+.home-body{padding:46px 0 60px}
+.panel{background:var(--card);border:1px solid var(--grey-xl);border-radius:var(--radius);padding:22px}
+.panel + .panel{margin-top:16px}
+.cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.mini{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:16px}
+.mini h4{color:var(--text)}
+.mini p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5}
+.numtag{
+  display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+  background:var(--green-wash);color:var(--green-d);font-weight:800;font-size:13px;margin-bottom:9px;
+}
+.handshake{
+  border:1px solid var(--green);background:var(--green-wash);border-radius:var(--radius);padding:18px 20px;margin-top:16px;
+}
+.handshake p{margin:0;font-size:14.5px;line-height:1.6}
+.handshake p + p{margin-top:9px}
+
+/* ---------- quiz ---------- */
+.quiz-shell{min-height:100vh;background:var(--paper);padding:26px 0 70px}
+.qtop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.qcount{font-size:11.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.bar{height:5px;background:var(--grey-xl);border-radius:999px;overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;background:var(--green);border-radius:999px;transition:width .3s ease}
+.qcard{background:var(--card);border:1px solid var(--grey-xl);border-radius:var(--radius);padding:24px}
+.qarea{font-size:11.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green-d);margin-bottom:10px}
+.qprompt{font-size:clamp(20px,2.6vw,27px);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin:0 0 8px}
+.qhelp{font-size:14px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+.opts{display:grid;gap:9px}
+.opt{
+  display:block;width:100%;text-align:left;cursor:pointer;background:var(--card);
+  border:1px solid var(--grey-l);border-radius:11px;padding:14px 16px;font-size:15px;line-height:1.4;
+  transition:border-color .12s ease, background .12s ease;color:var(--text);
+}
+.opt:hover{border-color:var(--green);background:var(--green-wash)}
+.opt.sel{border-color:var(--green);background:var(--green-wash);box-shadow:inset 0 0 0 1px var(--green)}
+.opt.ns{border-style:dashed;color:var(--muted)}
+.qnav{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;color:var(--muted);font-size:13.5px;cursor:pointer;text-decoration:underline;padding:6px 0}
+.txtin{
+  width:100%;border:1px solid var(--grey-l);border-radius:11px;padding:13px 14px;font-size:15px;
+  font-family:inherit;color:var(--text);background:var(--card);
+}
+.txtin:focus{outline:2px solid var(--green);outline-offset:1px}
+.txtin::placeholder{color:var(--grey)}
+.txtlabel{display:block;font-size:11.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.orline{display:flex;align-items:center;gap:12px;margin:20px 0 16px;color:var(--muted)}
+.orline:before,.orline:after{content:"";flex:1;height:1px;background:var(--grey-xl)}
+.orline span{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap}
+
+/* ---------- gate ---------- */
+.gate{background:var(--card);border:1px solid var(--grey-xl);border-radius:var(--radius);padding:24px}
+.gfields{display:grid;gap:12px;margin-top:16px}
+@media(min-width:720px){.gfields{grid-template-columns:1fr 1fr}.gfields .full{grid-column:1 / -1}}
+.gfield label{display:block;font-size:11.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.err{color:var(--red);font-size:13.5px;margin-top:10px;display:none}
+
+/* ---------- report ---------- */
+.rep{padding:0 0 80px}
+.rephead{background:var(--ink);color:#fff;padding:26px 0 30px;position:relative;overflow:hidden}
+.repnav{
+  position:sticky;top:0;z-index:40;background:rgba(22,26,24,0.97);border-bottom:1px solid var(--line-dark);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.repnav ul{display:flex;gap:2px;list-style:none;margin:0;padding:0 14px;min-width:max-content}
+.repnav a{
+  display:block;padding:12px 12px;color:rgba(255,255,255,0.66);text-decoration:none;
+  font-size:11.5px;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;white-space:nowrap;
+}
+.repnav a:hover{color:var(--green-b)}
+.vstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);border-radius:12px;overflow:hidden;margin-top:20px}
+.vband{background:var(--ink2);padding:13px 14px}
+.vband .rng{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);font-weight:700}
+.vband .nm{font-size:15px;font-weight:800;letter-spacing:-0.01em;margin:3px 0 4px;color:#fff}
+.vband .ms{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.45}
+.vband.you{background:var(--green-d)}
+.vband.you .rng,.vband.you .ms{color:rgba(255,255,255,0.86)}
+.youtag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:0.12em;background:var(--green-b);color:#10230A;padding:2px 7px;border-radius:5px;margin-bottom:5px}
+
+.part{padding:40px 0 0}
+.parthead{border-top:3px solid var(--green);padding-top:16px;margin-bottom:20px}
+.partno{font-size:11.5px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--green-d);margin-bottom:7px}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:15px 16px}
+.kpi .lb{font-size:10.5px;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted)}
+.kpi .vl{font-size:27px;font-weight:800;letter-spacing:-0.025em;line-height:1.1;margin:5px 0 4px}
+.kpi .nt{font-size:12px;color:var(--muted);line-height:1.45}
+.bullets{margin:0 0 14px;padding-left:20px}
+.bullets:last-child{margin-bottom:0}
+.bullets li{margin-bottom:8px;line-height:1.55}
+.bullets li:last-child{margin-bottom:0}
+
+.arearow{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:18px;margin-bottom:12px}
+.areatop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.areaname{font-size:18px;font-weight:800;letter-spacing:-0.01em;margin:0}
+.wktag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.12em;background:var(--red);color:#fff;padding:2px 6px;border-radius:5px;margin-left:7px;vertical-align:middle}
+.areascore{font-size:18px;font-weight:800;white-space:nowrap}
+.track{position:relative;height:13px;background:var(--grey-xl);border-radius:999px;overflow:hidden;margin:11px 0 9px}
+.track .shade{position:absolute;top:0;bottom:0;left:40%;width:30%;background:#D3D9D5}
+.track i{position:absolute;top:0;bottom:0;left:0;background:var(--green);border-radius:999px}
+.anchors{display:grid;gap:3px;margin:0 0 12px}
+.anchors span{font-size:12.5px;color:var(--muted);line-height:1.45}
+.qrow{border-top:1px dashed var(--grey-l);padding:11px 0 0;margin-top:11px}
+.qrow .qp{font-size:14px;font-weight:600;line-height:1.45;margin:0 0 5px}
+.qrow .qa{font-size:13.5px;color:var(--muted);margin:0}
+.qrow .qs{font-weight:800;color:var(--text)}
+.quote{font-style:normal;color:var(--text);font-weight:600}
+
+.gapcard{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:18px;margin-bottom:12px;border-left:4px solid var(--green)}
+.gapcard.high{border-left-color:var(--red)}
+.gaptop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.gapno{font-size:10.5px;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted)}
+.sev{font-size:10.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--grey-xl);color:var(--muted)}
+.sev.high{background:var(--red);color:#fff}
+.gq{font-size:17px;font-weight:700;line-height:1.35;margin:0 0 4px}
+.metaline{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.fixbox{background:var(--green-wash);border:1px solid #CFE6BC;border-radius:10px;padding:14px;margin-top:12px}
+.fixrow{margin-bottom:9px}
+.fixrow:last-child{margin-bottom:0}
+.fixrow .fl{font-size:10.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--green-d);display:block;margin-bottom:3px}
+.fixrow .fv{font-size:14px;line-height:1.5;margin:0}
+
+.modgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.modcard{background:var(--card);border:1px solid var(--grey-xl);border-radius:11px;padding:14px}
+.modcard b{display:block;font-size:14.5px;margin-bottom:4px}
+.modcard span{font-size:12.5px;color:var(--muted);line-height:1.45}
+
+.phase{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:18px;margin-bottom:12px}
+.phasetag{font-size:10.5px;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:var(--green-d);margin-bottom:6px}
+.phasedel{font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:8px 0 0}
+.pwhy{font-size:13.5px;color:var(--muted);line-height:1.55;margin:9px 0 0}
+
+.rt{background:var(--card);border:1px solid var(--grey-xl);border-radius:10px;padding:13px 15px;margin-bottom:9px}
+.rt .rq{font-size:13px;color:var(--muted);margin:0 0 5px;line-height:1.45}
+.rt .ra{font-size:14.5px;font-weight:700;margin:0 0 6px;line-height:1.4}
+.rt .re{font-size:13px;color:var(--muted);margin:0;line-height:1.5}
+.tapped{display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.12em;background:var(--grey-xl);color:var(--muted);padding:2px 6px;border-radius:4px;margin-right:7px;vertical-align:middle}
+
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px}
+.gl{background:var(--card);border:1px solid var(--grey-xl);border-radius:11px;padding:14px}
+.gl b{display:block;font-size:14px;margin-bottom:4px}
+.gl span{font-size:13px;color:var(--muted);line-height:1.5}
+
+.closing{background:var(--ink);color:#fff;border-radius:var(--radius);padding:28px;margin-top:40px;position:relative;overflow:hidden}
+.closing h3{color:#fff;font-size:24px;letter-spacing:-0.02em}
+.closing p{color:rgba(255,255,255,0.76);position:relative;z-index:2}
+.closing .cta-row{position:relative;z-index:2}
+.foot{margin-top:28px;padding-top:18px;border-top:1px solid var(--grey-xl);font-size:12px;color:var(--muted);line-height:1.6}
+
+.note{background:#FBFAF6;border:1px dashed var(--grey-l);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--muted);line-height:1.55;margin:12px 0 0}
+.calcline{
+  background:var(--ink);color:#fff;border-radius:10px;padding:14px 16px;font-size:clamp(14px,2vw,18px);
+  font-weight:700;letter-spacing:-0.01em;margin:14px 0;overflow-x:auto;white-space:nowrap;
+}
+.bignum{font-size:clamp(42px,8vw,74px);font-weight:800;letter-spacing:-0.04em;line-height:1;color:var(--text);margin:6px 0 8px}
+.chartwrap{background:var(--card);border:1px solid var(--grey-xl);border-radius:12px;padding:16px;margin-top:14px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+.lgi{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+.sw{width:13px;height:13px;border-radius:3px;flex:none}
+.sw.fill{background:var(--green)}
+.sw.out{border:1.6px dashed var(--grey-l);background:transparent}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.seatcard{background:var(--card);border:1px solid var(--green);border-radius:12px;padding:16px;margin-top:12px}
+@media print{
+  .repnav,.actions,.cta-row,.sliderow,.linkbtn{display:none !important}
+  body{background:#fff}
+  .part{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HOME ================= -->
+<main id="home">
+  <section class="home-top">
+    <div class="dotfield"></div>
+    <div class="wrap">
+      <nav class="navbar">
+        <div class="brandmark">
+          <svg class="mk" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 5h7l5 12 5-12h7L19 27h-6L4 5z" fill="#7FCB42"/></svg>
+          <span class="nm">OneRevel</span>
+        </div>
+        <span class="navpill">The Screen Time Check</span>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow on-dark">A four minute check · no cost, no install</p>
+          <h1 class="display">What are your screens <span class="g">saying this week?</span></h1>
+          <p class="hero-lede">Everybody buys the screens. Far fewer fund the part that decides whether the screens were worth buying: what is actually on them, how fast it changes, and whether anyone can show what it did.</p>
+
+          <div class="hero-claim">
+            <p>OneRevel started out selling advertising on screens. About 97 percent of advertisers never renewed, because nobody could show them what their screen time had done. When those advertisers asked to run their own messaging instead, the company pivoted, and that is the business it runs today.</p>
+            <span class="who">Brian Fitzpatrick, CEO and President, OneRevel</span>
+          </div>
+
+          <div class="cta-row">
+            <button class="btn" id="start-btn">Start the check</button>
+            <button class="btn ghost" id="skip-to-what">What it asks</button>
+          </div>
+          <p class="cta-note">14 questions. Nothing is installed, nothing is scanned, and Not sure is a real answer on every one of them.</p>
+        </div>
+
+        <div class="figbox">
+          <div class="fighead">
+            <div class="figread" style="flex:1 1 100%">Saying whatever they said last<b id="hero-r2" style="font-size:30px;letter-spacing:-0.03em">0 of 24 screens</b></div>
+          </div>
+          <span id="hero-r1" class="hide"></span>
+          <div id="hero-svg"></div>
+          <div class="sliderow">
+            <label for="hero-slider">Drag: how many are running this week's message</label>
+            <input type="range" id="hero-slider" min="0" max="24" step="1" value="0" aria-label="Screens running this week's message">
+          </div>
+          <p class="figcap" id="hero-cap">The top row is money you already spent. The bottom row is what it is doing this week.</p>
+          <div class="legend">
+            <span class="lgi"><i class="sw fill"></i>Saying something somebody chose</span>
+            <span class="lgi"><i class="sw out"></i>Still saying whatever it said last</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><b>350,000+</b><span>Unique pieces of digital signage content OneRevel has built, before AI</span></div>
+        <div class="fact"><b>98%</b><span>Customer retention since the company began</span></div>
+        <div class="fact"><b>7</b><span>Phases in their published Why Revel framework</span></div>
+        <div class="fact"><b>17</b><span>Years running screen estates, from one store to a full bowl</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-body" id="what-it-asks">
+    <div class="wrap">
+      <p class="eyebrow">What this check is</p>
+      <h2 class="sec">Four areas, eleven scored answers, one number</h2>
+      <p class="lede">It scores what your screens are doing right now, names every gap in your own words, and matches each one to the part of OneRevel that would close it. It is a check, not a quote. No prices appear anywhere in it.</p>
+
+      <div class="cols2">
+        <div class="mini"><span class="numtag">1</span><h4>What is on them</h4><p>When the message last changed, who decides what goes up, and how much of the estate has not moved in a month.</p></div>
+        <div class="mini"><span class="numtag">2</span><h4>How fast it changes</h4><p>From deciding something to seeing it on screen. How many people it takes, and whether anything changes by itself from data.</p></div>
+        <div class="mini"><span class="numtag">3</span><h4>What it is up against</h4><p>A pro team CIO told Brian his competition is not other teams, it is your living room. This asks whether your screens beat the phone in someone's pocket.</p></div>
+        <div class="mini"><span class="numtag">4</span><h4>What you can show for it</h4><p>Whether a dark screen gets noticed, and whether you could prove to a sponsor, a brand team or a boss that a message ran.</p></div>
+      </div>
+
+      <div class="handshake">
+        <p><strong>How this sits beside what OneRevel already publishes.</strong> Their seven phase Why Revel framework describes what it takes to build and run a screen estate, from the displays through to the support that stays with you. This check asks a different question, and the two do not overlap.</p>
+        <p>Their seven phases describe what it takes to run an estate. This tells you what yours is saying this week.</p>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3>What you get at the end</h3>
+        <ul class="bullets">
+          <li>A verdict set by your weakest area, never the average, with all four bands printed so you can see the rule.</li>
+          <li>A count of the screens showing a message nobody chose this month, worked from two figures you give us and nothing else.</li>
+          <li>Every gap quoted back in your own words, matched to the named part of OneRevel accountable for closing it, including one gap that is not theirs to close.</li>
+          <li>A first 90 days in order, starting with the smallest piece of work worth doing, which is how OneRevel's own customers usually start.</li>
+        </ul>
+      </div>
+
+      <div class="cta-row" style="margin-top:22px">
+        <button class="btn dark" id="start-btn-2">Start the check</button>
+      </div>
+      <p class="tiny" style="margin-top:10px">This check scores how a screen estate is run. It makes no judgement about any individual message, brand or sponsor, and it asks nothing about any of them.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ================= QUIZ ================= -->
+<main id="quiz" class="quiz-shell hide">
+  <div class="wrap">
+    <div class="qtop">
+      <div class="brandmark"><svg class="mk" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 5h7l5 12 5-12h7L19 27h-6L4 5z" fill="#6AB432"/></svg><span class="nm" style="color:var(--green-d)">OneRevel</span></div>
+      <span class="qcount" id="q-count">Question 1 of 14</span>
+    </div>
+    <div class="bar"><i id="q-bar" style="width:7%"></i></div>
+    <div class="qcard">
+      <div class="qarea" id="q-area">Who is asking</div>
+      <h2 class="qprompt" id="q-prompt">Question</h2>
+      <p class="qhelp" id="q-help"></p>
+      <div class="opts" id="q-opts"></div>
+      <div id="q-text-wrap" class="hide">
+        <div class="orline"><span>or say it in your own words</span></div>
+        <label class="txtlabel" for="q-text">In your own words, optional</label>
+        <input class="txtin" id="q-text" type="text" placeholder="For example: stop the screens saying things that stopped being true in March" autocomplete="off">
+        <p class="tiny" style="margin:8px 0 0">Tap an option above and we use it to order your plan. Type here as well and we quote your wording instead of ours. You can do either, or both.</p>
+      </div>
+      <div class="qnav">
+        <button class="btn dark" id="q-next">Next</button>
+        <button class="linkbtn" id="q-back">Back</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= GATE ================= -->
+<main id="gate" class="quiz-shell hide">
+  <div class="wrap">
+    <div class="gate">
+      <p class="eyebrow">Last step</p>
+      <h2 class="sec">Where should the report be addressed?</h2>
+      <p class="lede">Your answers are already scored. This names the report and tells the OneRevel team who to talk to about it. Nothing is sent to you automatically.</p>
+      <div class="gfields">
+        <div class="gfield"><label for="l-name">Your name</label><input class="txtin" id="l-name" type="text" autocomplete="name"></div>
+        <div class="gfield"><label for="l-org">Venue, brand or company</label><input class="txtin" id="l-org" type="text" autocomplete="organization"></div>
+        <div class="gfield full"><label for="l-email">Work email</label><input class="txtin" id="l-email" type="email" autocomplete="email"></div>
+      </div>
+      <div class="err" id="l-err"></div>
+      <div class="qnav"><button class="btn" id="l-go">See the report</button><button class="linkbtn" id="l-back">Back</button></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= REPORT ================= -->
+<main id="report" class="rep hide"></main>
+
+<script>
+/* ===================== DATA ===================== */
+var AREAS = [
+  { id:"on",    name:"What is on them",
+    blurb:"Whether the message on your screens is a decision somebody made recently, or whatever was left there.",
+    one:"a screen shows whatever was loaded at install, and nobody has looked since.",
+    ten:"every screen carries a current message, changed on a schedule somebody owns." },
+  { id:"speed", name:"How fast it changes",
+    blurb:"The time between deciding something and seeing it on screen, and how much of that is people.",
+    one:"changing one screen means an email, a supplier and a wait.",
+    ten:"anyone who should can change it in minutes, and some of it changes by itself." },
+  { id:"worth", name:"What it is up against",
+    blurb:"Whether the screens give somebody standing in your building a reason to look up.",
+    one:"the screens show what their phone already shows, only bigger.",
+    ten:"there is a moment on those screens that cannot be had anywhere else." },
+  { id:"proof", name:"What you can show for it",
+    blurb:"Whether you would know a screen went dark, and whether you could prove a message ran.",
+    one:"you find out a screen is dark when a customer mentions it.",
+    ten:"one report says what ran, where, and for how long." }
+];
+
+var SEATS = {
+  sports: {
+    label:"A pro or college sports venue",
+    read:"You are running a show, not a screen estate. Everything below is read against an event day: the doors opening, the run of play, and the moment people decide whether to come back.",
+    unit:"event day", units:"event days", place:"the building", who:"game presentation and partnerships"
+  },
+  brand: {
+    label:"A brand with many locations",
+    read:"You are running the same decision hundreds of times over. Everything below is read against a rollout: one message that has to land the same way in every location, without a visit to any of them.",
+    unit:"location", units:"locations", place:"your locations", who:"marketing and operations"
+  },
+  venue: {
+    label:"A single venue: theatre, attraction or entertainment space",
+    read:"You have one building and a changing programme. Everything below is read against a run of shows: what changes between them, who changes it, and how quickly.",
+    unit:"show night", units:"show nights", place:"the building", who:"front of house and marketing"
+  },
+  agency: {
+    label:"An agency, consultant or contractor specifying for a client",
+    read:"You are answering for somebody else's building. Everything below is read against a specification: what you are being asked to commit to, and what nobody has asked the operators yet.",
+    unit:"project", units:"projects", place:"the client's building", who:"you and the operator you are specifying for"
+  }
+};
+
+var BANDS = [
+  { max:4,  name:"Screens, not a message",
+    mean:"The hardware is installed and working. What it says is whatever it said last, because nobody owns the deciding." },
+  { max:6,  name:"A message, once",
+    mean:"Somebody decided well once. The screens have been running that decision ever since, and the business has moved on." },
+  { max:8,  name:"Changing, not measured",
+    mean:"Content moves and people notice, but nobody could show a sponsor or a boss what any of it actually did." },
+  { max:99, name:"Your message matters",
+    mean:"The screens carry a current message, it changes when the business changes, and you can show what ran." }
+];
+
+var MODULES = {
+  cv:   { n:"Channel Valet",           d:"OneRevel's own content platform. One place to control what every screen is showing, from anywhere." },
+  csp:  { n:"Creative Service Program",d:"A monthly content programme. Professional design keeping the screens fresh, organised and on brand." },
+  scc:  { n:"Simple Content Creation", d:"Phase 5 of Why Revel. Graphic support with update workflows a normal person can actually run." },
+  cbi:  { n:"Cloud-Based Interface",   d:"Phase 4 of Why Revel. A simple interface for day to day management and control." },
+  bi:   { n:"Business Integration",    d:"Phase 6 of Why Revel. Screens that read from your current operations and data workflows." },
+  rc:   { n:"Reliable Connectivity",   d:"Phase 7 of Why Revel. Customer service and technical support that stays with you after the install." },
+  cds:  { n:"Content Delivery Systems",d:"Phase 3 of Why Revel. The distribution layer that gets the right content to every location." },
+  iptv: { n:"IPTV",                    d:"Closed network IPTV with redundant servers and flexible layouts, built for venues and enterprise." },
+  led:  { n:"REVELTV Large Format LED",d:"High resolution LED signage designed to scale and adapt, indoors or out." },
+  menu: { n:"Menu Boards",             d:"Digital menu boards that keep pricing flexible and move lines faster." },
+  self: { n:"Selfie Station",          d:"Interactive selfie kiosks that capture customer data and get people sharing on site." },
+  vw:   { n:"Video Wall",              d:"Video walls that turn a blank space into something people stop and look at." },
+  radio:{ n:"Revel Radio",             d:"Licensed in store radio with custom channels, daypart scheduling and message insertion." },
+  av:   { n:"Commercial AV integration", d:"The integration side of OneRevel. Experiential installs, put together to hit an outcome." }
+};
+
+/* ---- questions. 14 screens: seat, 11 scored, 1 sizing, 1 goal ---- */
+var QUESTIONS = [
+  { id:"seat", type:"seat", area:null,
+    prompt:"Which of these is closest to you?",
+    help:"This sets the language the whole report is written in. It changes what you read, never how you are scored.",
+    opts:[
+      { t:"A pro or college sports venue", seat:"sports" },
+      { t:"A brand with many locations: retail, grocery, convenience, banking", seat:"brand" },
+      { t:"A single venue: theatre, attraction or entertainment space", seat:"venue" },
+      { t:"An agency, consultant or contractor specifying for a client", seat:"agency" }
+    ]},
+
+  { id:"a1", type:"scored", area:"on",
+    prompt:"When did the message on most of your screens last change?",
+    help:"Most of them, not the one you changed yesterday.",
+    opts:[
+      { t:"Today or this week", s:9.5 },
+      { t:"Some time this month", s:7 },
+      { t:"Some time this quarter", s:4.5 },
+      { t:"Longer than that, or it is still the content from the install", s:2 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Put a current message on every screen",
+      first:"Start with the screens the most people walk past, and give them something that is true this week.",
+      work:"Creative Service Program + Channel Valet · a monthly content run, pushed from one place.",
+      plan:"Get a current message onto the screens on a repeating monthly cycle, so nothing goes stale by default.",
+      hurts:"A screen running an old message is not neutral. It quietly teaches everyone who walks past that the screens are not worth looking at, and that lesson is expensive to undo.",
+      closes:"The content stops depending on somebody remembering. It arrives every month whether or not anyone had time.",
+      good:"Somebody walks the floor and every screen is saying something that is true today.",
+      mods:["csp","cv"] } },
+
+  { id:"a2", type:"scored", area:"on",
+    prompt:"Who decides what goes on the screens?",
+    help:"Deciding, not uploading. They can be the same person.",
+    opts:[
+      { t:"One named person, working to a schedule", s:9.5 },
+      { t:"Marketing decides, somebody else puts it up", s:6.5 },
+      { t:"Whoever has time that week", s:3.5 },
+      { t:"Nobody really. It runs what it runs", s:1.5 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Give the screens one named owner",
+      first:"Name the person, then give them a calendar rather than a request queue.",
+      work:"Simple Content Creation + Cloud-Based Interface · one owner, one interface, a workflow they can keep up with.",
+      plan:"Move from requests to a content calendar owned by one person, with the design work supplied around them.",
+      hurts:"When deciding is shared, nobody schedules. The screens then run on whoever last felt strongly, which is not a plan and cannot be handed over.",
+      closes:"An owner with a workflow produces a calendar. A request queue never does, however willing everyone is.",
+      good:"One person can say what every screen will be showing next month, without asking anybody.",
+      mods:["scc","cbi"] } },
+
+  { id:"a3", type:"scored", area:"on", sizing:"share",
+    prompt:"Of all your screens, roughly what share is showing something that has not changed in the last month?",
+    help:"A rough share is fine. This answer does two jobs: it scores this area, and it is one of the two figures behind the count in Part 2.",
+    opts:[
+      { t:"Almost none of them, under a tenth", s:9.5, v:0.08, vl:"under a tenth of them" },
+      { t:"About a quarter", s:7, v:0.25, vl:"about a quarter of them" },
+      { t:"About half", s:4.5, v:0.5, vl:"about half of them" },
+      { t:"Most of them, three quarters or more", s:2, v:0.8, vl:"about four in five of them" },
+      { t:"Not sure", s:null, v:null }
+    ],
+    fix:{
+      move:"Shrink the share that never moves",
+      first:"Pick the worst group of screens and put them on a cycle first, rather than fixing the estate at once.",
+      work:"Channel Valet + Content Delivery Systems · scheduled content reaching every location without a visit.",
+      plan:"Bring the never changing screens onto the same scheduled cycle as the rest, group by group.",
+      hurts:"A large stale share is the whole estate's reputation. People stop reading all of the screens because some of them are always wrong.",
+      closes:"Scheduling from one place removes the reason a screen gets left behind, which is almost always that reaching it was awkward.",
+      good:"The share of screens nobody has touched this month is a number you can say out loud without wincing.",
+      mods:["cv","cds"] } },
+
+  { id:"b1", type:"scored", area:"speed",
+    prompt:"You decide this morning that a message needs to change. When is it on the screens?",
+    help:"A normal change, not an emergency.",
+    opts:[
+      { t:"Within the hour", s:9.5 },
+      { t:"Same day", s:7.5 },
+      { t:"A few days", s:4.5 },
+      { t:"A week or more, or we need the installer or an agency", s:2 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Cut the time from deciding to showing",
+      first:"Time one real change end to end this month, and write down where the days actually go.",
+      work:"Cloud-Based Interface + Channel Valet · publish from one place, no ticket and no supplier in the path.",
+      plan:"Take the supplier and the ticket out of routine changes, so a normal change is minutes rather than days.",
+      hurts:"When a change takes a week, the screens can only ever carry things that were true a week ago. Anything timely simply never goes up.",
+      closes:"Removing the wait removes the filter. Things that are worth saying today become things that get said today.",
+      good:"Somebody decides at nine and sees it on screen before lunch, without asking a supplier.",
+      mods:["cbi","cv"] } },
+
+  { id:"b2", type:"scored", area:"speed",
+    prompt:"How many people have to be involved to change what one screen says?",
+    help:"Counting everyone whose approval or login is needed.",
+    opts:[
+      { t:"One, and they can do it from a phone", s:9.5 },
+      { t:"Two: whoever decides, and whoever has the login", s:6.5 },
+      { t:"Three or more", s:3.5 },
+      { t:"Nobody here can. It needs the installer or the agency", s:1.5 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Put the change in one pair of hands",
+      first:"Give the person who decides the message the access to publish it, and watch what happens to the frequency.",
+      work:"Channel Valet + Simple Content Creation · the person who decides is the person who publishes.",
+      plan:"Collapse the handover chain so deciding and publishing sit with the same person.",
+      hurts:"Every extra pair of hands is another chance for a change to stop. The screens end up showing whatever survived the chain, not whatever was worth showing.",
+      closes:"One person with access and a template does not need a handover, so nothing is lost in one.",
+      good:"The person who knows what needs saying is the person who says it, that morning.",
+      mods:["cv","scc"] } },
+
+  { id:"b3", type:"scored", area:"speed",
+    prompt:"Does anything on your screens change by itself, from data rather than from a person?",
+    help:"A score, a till, stock levels, a ticket scan, the weather, the time of day.",
+    opts:[
+      { t:"Yes, several things do", s:9.5 },
+      { t:"One thing does, usually time of day", s:6.5 },
+      { t:"No. Every change is somebody doing it", s:3 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Let the data change the screens",
+      first:"Pick the one thing that changes most often and most predictably, and wire that first.",
+      work:"Business Integration + Channel Valet · screens reading from the systems you already run.",
+      plan:"Connect the first live source so the screens follow the business without anyone republishing.",
+      hurts:"If every change is a person, the screens can only be as current as the busiest week allows. The busiest weeks are exactly when being current matters most.",
+      closes:"A connected screen is right at three in the afternoon on a day nobody had time, which is the day it was always going to be wrong.",
+      good:"Prices, stock, scores or times update on their own, and nobody is proud of it because nobody notices.",
+      mods:["bi","cv"] } },
+
+  { id:"c1", type:"scored", area:"worth",
+    prompt:"Has anyone compared what somebody sees in your building to what they would get at home or on their phone?",
+    help:"A pro team CIO told Brian Fitzpatrick his competition is not other teams, it is your living room.",
+    opts:[
+      { t:"Yes, and it changed what we built", s:9.5 },
+      { t:"Yes, informally. It was discussed", s:6 },
+      { t:"No", s:3 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Decide what the room is for",
+      first:"Walk your own building as a visitor once, phone in hand, and write down every moment the phone wins.",
+      work:"Not OneRevel's to close. This one is yours.",
+      plan:"Settle what the moment in your building is supposed to be, before anyone specifies the technology for it.",
+      hurts:"Without that comparison, the screens get specified against a budget instead of against an experience, and the result is technically correct and forgettable.",
+      closes:"Nothing closes it from outside. A supplier can build the moment, but deciding what the moment should be is the part only you can do.",
+      good:"Somebody can say in one sentence what your building gives people that their sofa does not.",
+      mods:[], notOurs:true } },
+
+  { id:"c2", type:"scored", area:"worth",
+    prompt:"Do your screens do anything the phone in somebody's pocket cannot?",
+    help:"Scale, timing, something live, something shared with the people standing next to them.",
+    opts:[
+      { t:"Yes: scale, or timing, or something genuinely live", s:9 },
+      { t:"A little. Mostly they are bigger versions of the app", s:6 },
+      { t:"No. They show roughly what the app shows", s:3 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Give the screens a job the phone cannot do",
+      first:"Choose one moment where everyone in the room should be looking at the same thing, and build for that moment only.",
+      work:"Video Wall + REVELTV Large Format LED + Selfie Station · scale and shared moments, which a phone has no answer to.",
+      plan:"Build one shared moment that only works at scale, rather than spreading the budget across every screen.",
+      hurts:"A screen competing with a phone on the phone's terms always loses. It is closer, it is personal and it is already in their hand.",
+      closes:"Scale and a shared moment are the two things a phone cannot copy, so they are the only ground worth fighting on.",
+      good:"There is a moment where everybody in the room looks up at the same time, and nobody is on their phone.",
+      mods:["vw","led","self"] } },
+
+  { id:"d1", type:"sizing", area:null, sizing:"screens",
+    prompt:"Roughly how many screens do you have, across everything?",
+    help:"Every screen you are responsible for: signage, menu boards, IPTV, LED boards, all of it. A rough band is fine.",
+    opts:[
+      { t:"Under 25", v:20, vl:"about 20 screens" },
+      { t:"25 to 100", v:60, vl:"about 60 screens" },
+      { t:"100 to 500", v:250, vl:"about 250 screens" },
+      { t:"500 to 2,000", v:1000, vl:"about 1,000 screens" },
+      { t:"More than 2,000", v:3000, vl:"about 3,000 screens" },
+      { t:"Not sure", v:null }
+    ]},
+
+  { id:"d2", type:"scored", area:"proof",
+    prompt:"If a screen went dark right now, how would you find out?",
+    help:"Dark, frozen, or stuck on an error. Any of those.",
+    opts:[
+      { t:"It alerts us automatically", s:9.5 },
+      { t:"Somebody on site would report it", s:6 },
+      { t:"A customer or a colleague would mention it eventually", s:3 },
+      { t:"We would not, until somebody happened to walk past", s:1.5 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Know before your customers do",
+      first:"Turn on monitoring for the screens your customers see first, before worrying about the back of house ones.",
+      work:"Reliable Connectivity + Channel Valet · monitoring and support that tells you, rather than waiting to be told.",
+      plan:"Put alerting on the customer facing screens so a dark one is a notification rather than a complaint.",
+      hurts:"A dark screen you find out about from a customer has already been dark for a while, and the person who told you is the person you most wanted to impress.",
+      closes:"Monitoring turns a discovery into a notification, which is the difference between fixing it and apologising for it.",
+      good:"A screen fails and the team already has a ticket open by the time anybody walks past it.",
+      mods:["rc","cv"] } },
+
+  { id:"d3", type:"scored", area:"proof",
+    prompt:"Could you show somebody that a specific message actually ran, and where?",
+    help:"A sponsor, a brand team, a supplier or a boss asking what happened to their message.",
+    opts:[
+      { t:"Yes, a report per screen", s:9.5 },
+      { t:"Roughly, from the schedule we set", s:6 },
+      { t:"No. They would have to take our word for it", s:2.5 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Make the screens produce their own record",
+      first:"Start reporting on the screen time somebody else is already owed, before reporting on your own.",
+      work:"Channel Valet + Content Delivery Systems · one system of record, so what ran is a query rather than a memory.",
+      plan:"Run every screen through one platform, so proof of what ran assembles itself instead of being reconstructed.",
+      hurts:"Screen time nobody can prove is screen time nobody renews. OneRevel learned that at about 97 percent attrition before it changed its business model.",
+      closes:"When everything publishes from one place, the record already exists. Nobody has to build it after the fact.",
+      good:"The question of what ran last month is answered in minutes, from one screen, by one person.",
+      mods:["cv","cds"] } },
+
+  { id:"d4", type:"scored", area:"proof",
+    prompt:"Is any of your screen time promised to somebody else: sponsors, brand partners, suppliers or tenants?",
+    help:"Screen time you owe somebody, whether or not money changed hands.",
+    opts:[
+      { t:"Yes, and we report on it properly", s:9 },
+      { t:"Yes, but we do not report on it", s:3 },
+      { t:"No. All of it is ours", s:7.5 },
+      { t:"Not sure", s:null }
+    ],
+    fix:{
+      move:"Report on the screen time you owe",
+      first:"List who is owed screen time, then report to the one who would notice the report most.",
+      work:"Channel Valet + Menu Boards + IPTV · scheduled, logged and reportable across every surface you owe.",
+      plan:"Put every promised slot into a schedule that logs itself, so the report is a by product rather than a project.",
+      hurts:"Screen time promised and not reported is a renewal conversation with no evidence in it. The partner remembers what they paid, not what ran.",
+      closes:"A logged schedule turns the renewal conversation from a negotiation about feelings into a document.",
+      good:"Every partner gets a report they did not have to ask for, and renewal stops being an argument.",
+      mods:["cv","menu","iptv"] } },
+
+  { id:"goal", type:"goal", area:null,
+    prompt:"What is the one thing you most want your screens to do differently in the next twelve months?",
+    help:"Pick the closest option, write your own, or do both. Whatever you give us is quoted at the top of your plan, and it can move its area to the front of the order.",
+    opts:[
+      { t:"Stop showing out of date messages", g:"on" },
+      { t:"Change what is on them far faster", g:"speed" },
+      { t:"Give people a reason to look up", g:"worth" },
+      { t:"Be able to prove what ran", g:"proof" }
+    ],
+    allowText:true }
+];
+
+var SCORED = QUESTIONS.filter(function(q){ return q.type === "scored"; });
+var GAP_LINE = 6.5;
+
+/* ===================== HELPERS ===================== */
+function byId(i){ return document.getElementById(i); }
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function n0(n){ return Math.round(n).toLocaleString("en-US"); }
+function one(n){ return (Math.round(n*10)/10).toFixed(1); }
+function pct(n){ return Math.round(n*100) + "%"; }
+
+/* ===================== HERO ===================== */
+var HERO_TOTAL = 24;
+var heroState = { live:0, narrow:false, timer:null };
+
+function heroModel(live, narrow){
+  var total = HERO_TOTAL;
+  var perRow = narrow ? 8 : 12;
+  var rows = total / perRow;
+  return { total:total, live:Math.max(0, Math.min(total, live)), stale:total - Math.max(0, Math.min(total, live)), perRow:perRow, rows:rows, narrow:narrow };
+}
+
+function dotTile(x, y, w, h, live){
+  /* a tile drawn with OneRevel's halftone dot texture */
+  var out = "";
+  var fill = live ? "#6AB432" : "none";
+  var stroke = live ? "#7FCB42" : "#8A918D";
+  var dash = live ? "" : ' stroke-dasharray="3 3"';
+  out += '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="3" fill="'+fill+'" fill-opacity="'+(live?0.92:0)+'" stroke="'+stroke+'" stroke-width="1.4"'+dash+'/>';
+  var step = 5, r = 1.15;
+  var dotcol = live ? "#10230A" : "#6E7672";
+  var op = live ? 0.38 : 0.55;
+  for(var dy = y + 4; dy < y + h - 2.5; dy += step){
+    for(var dx = x + 4; dx < x + w - 2.5; dx += step){
+      out += '<circle cx="'+dx.toFixed(1)+'" cy="'+dy.toFixed(1)+'" r="'+r+'" fill="'+dotcol+'" fill-opacity="'+op+'"/>';
+    }
+  }
+  return out;
+}
+
+function renderHero(){
+  var host = byId("hero-svg");
+  if(!host) return;
+  var narrow = (typeof window !== "undefined" && window.innerWidth) ? window.innerWidth < 700 : false;
+  var m = heroModel(heroState.live, narrow);
+  heroState.narrow = narrow;
+
+  var tw = narrow ? 34 : 44, th = narrow ? 22 : 28, gx = narrow ? 5 : 7, gy = narrow ? 5 : 7;
+  var padL = narrow ? 8 : 12;
+  /* on narrow the count sits on its own line under the section label, because at fallback
+     font widths a side by side count runs straight into the label */
+  /* fallback fonts sit taller than Helvetica, so the first label needs real headroom */
+  var padT = narrow ? 44 : 34;
+  var gridW = m.perRow * tw + (m.perRow - 1) * gx;
+  var rowsPerBlock = m.rows;
+  var blockH = rowsPerBlock * th + (rowsPerBlock - 1) * gy;
+  var gapBetween = narrow ? 56 : 54;
+  var vbW = padL * 2 + gridW;
+  var vbH = padT + blockH + gapBetween + blockH + (narrow ? 28 : 32);
+
+  var s = '<svg viewBox="0 0 '+vbW+' '+vbH+'" width="100%" role="img" aria-label="Twenty four screens, '+m.live+' of them running a message chosen this week" style="display:block">';
+  s += '<style>.hl{font-family:Helvetica,Arial,sans-serif;font-size:'+(narrow?8.5:9.5)+'px;font-weight:700;letter-spacing:0.1em;fill:#9AA29D}.hn{font-family:Helvetica,Arial,sans-serif;font-size:'+(narrow?10:11)+'px;font-weight:700;fill:#7FCB42}.hg{font-family:Helvetica,Arial,sans-serif;font-size:'+(narrow?10:11)+'px;font-weight:700;fill:#9AA29D}</style>';
+
+  /* ---- block 1: what you installed ---- */
+  s += '<text class="hl" x="'+padL+'" y="15">WHAT YOU INSTALLED</text>';
+  if(narrow){
+    s += '<text class="hn" x="'+padL+'" y="29">'+m.total+' working</text>';
+  } else {
+    s += '<text class="hn" x="'+(padL+gridW)+'" y="15" text-anchor="end">'+m.total+' working</text>';
+  }
+  var i, r, c, x, y;
+  for(i = 0; i < m.total; i++){
+    r = Math.floor(i / m.perRow); c = i % m.perRow;
+    x = padL + c * (tw + gx); y = padT + r * (th + gy);
+    s += dotTile(x, y, tw, th, true);
+  }
+
+  /* ---- divider ---- */
+  /* on narrow the second block carries a two line header, so the rule sits higher to clear it */
+  var dy2 = padT + blockH + (narrow ? 16 : (gapBetween / 2) - 4);
+  s += '<line x1="'+padL+'" y1="'+dy2+'" x2="'+(padL+gridW)+'" y2="'+dy2+'" stroke="#3C413E" stroke-width="1"/>';
+
+  /* ---- block 2: what it is saying this week ---- */
+  var t2 = padT + blockH + gapBetween;
+  var lbl2 = m.live + ' chosen';
+  var cls2 = m.live > 0 ? 'hn' : 'hg';
+  if(narrow){
+    s += '<text class="hl" x="'+padL+'" y="'+(t2-24)+'">SAYING THIS WEEK</text>';
+    s += '<text class="'+cls2+'" x="'+padL+'" y="'+(t2-11)+'">'+lbl2+'</text>';
+  } else {
+    s += '<text class="hl" x="'+padL+'" y="'+(t2-11)+'">WHAT IT IS SAYING THIS WEEK</text>';
+    s += '<text class="'+cls2+'" x="'+(padL+gridW)+'" y="'+(t2-11)+'" text-anchor="end">'+lbl2+'</text>';
+  }
+  for(i = 0; i < m.total; i++){
+    r = Math.floor(i / m.perRow); c = i % m.perRow;
+    x = padL + c * (tw + gx); y = t2 + r * (th + gy);
+    s += dotTile(x, y, tw, th, i < m.live);
+  }
+
+  /* ---- bottom count ---- */
+  var by = t2 + blockH + (narrow ? 18 : 21);
+  var stale = m.stale;
+  var msg;
+  if(stale === 0){ msg = "Every screen is saying something somebody chose."; }
+  else if(stale === m.total){ msg = "All " + m.total + " are saying whatever they said last."; }
+  else { msg = stale + " of " + m.total + " are saying whatever they said last."; }
+  s += '<text class="hl" x="'+padL+'" y="'+by+'" style="fill:'+(stale===0?'#7FCB42':'#C6CCC8')+';letter-spacing:0.04em;font-size:'+(narrow?10:11)+'px">'+msg+'</text>';
+  s += '</svg>';
+  host.innerHTML = s;
+
+  var r1 = byId("hero-r1"), r2 = byId("hero-r2"), cap = byId("hero-cap");
+  if(r1) r1.textContent = m.total + " of " + m.total + " working";
+  /* the big readout carries the argument, so it counts the stale ones, not the live ones */
+  if(r2) r2.textContent = stale + " of " + m.total + " screens";
+  if(cap){
+    if(stale === 0){
+      cap.innerHTML = "The top row is money you already spent. Right now the bottom row is <b>earning it back on every screen</b>.";
+    } else {
+      cap.innerHTML = "The top row is money you already spent. The bottom row is <b>what it is doing this week</b>.";
+    }
+  }
+}
+
+function heroSet(v){
+  heroState.live = Math.max(0, Math.min(HERO_TOTAL, v));
+  var sl = byId("hero-slider");
+  if(sl && Number(sl.value) !== heroState.live) sl.value = String(heroState.live);
+  renderHero();
+}
+
+function heroAnimate(){
+  var target = 18, step = 0;
+  if(heroState.timer) clearInterval(heroState.timer);
+  heroState.timer = setInterval(function(){
+    step++;
+    heroSet(step);
+    if(step >= target){ clearInterval(heroState.timer); heroState.timer = null; }
+  }, 55);
+}
+
+/* ===================== STATE + QUIZ ===================== */
+var STATE = { answers:{}, idx:0, lead:{}, lev:{}, goalText:"", cfg:null };
+
+function show(which){
+  ["home","quiz","gate","report"].forEach(function(id){
+    var el = byId(id); if(el) el.classList.add("hide");
+  });
+  var t = byId(which); if(t) t.classList.remove("hide");
+}
+
+function areaName(id){
+  for(var i=0;i<AREAS.length;i++){ if(AREAS[i].id === id) return AREAS[i].name; }
+  return "";
+}
+
+function drawQuestion(){
+  var q = QUESTIONS[STATE.idx];
+  if(!q) return;
+  byId("q-count").textContent = "Question " + (STATE.idx + 1) + " of " + QUESTIONS.length;
+  byId("q-bar").style.width = Math.round(((STATE.idx + 1) / QUESTIONS.length) * 100) + "%";
+  var lbl = q.area ? areaName(q.area) : (q.type === "seat" ? "Who is asking" : (q.type === "goal" ? "What you want" : "How big it is"));
+  byId("q-area").textContent = lbl;
+  byId("q-prompt").textContent = q.prompt;
+  byId("q-help").textContent = q.help || "";
+
+  var sel = STATE.answers[q.id];
+  var html = "";
+  for(var i = 0; i < q.opts.length; i++){
+    var o = q.opts[i];
+    var isNS = (o.t === "Not sure");
+    html += '<button class="opt' + (sel === i ? " sel" : "") + (isNS ? " ns" : "") + '" data-i="' + i + '">' + esc(o.t) + '</button>';
+  }
+  byId("q-opts").innerHTML = html;
+
+  var tw = byId("q-text-wrap");
+  if(q.allowText){
+    tw.classList.remove("hide");
+    byId("q-text").value = STATE.goalText || "";
+  } else {
+    tw.classList.add("hide");
+  }
+
+  byId("q-back").style.visibility = STATE.idx === 0 ? "hidden" : "visible";
+  byId("q-next").textContent = STATE.idx === QUESTIONS.length - 1 ? "Finish" : "Next";
+}
+
+function bindQuiz(){
+  byId("q-opts").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".opt") : null;
+    if(!b) return;
+    var q = QUESTIONS[STATE.idx];
+    STATE.answers[q.id] = Number(b.getAttribute("data-i"));
+    drawQuestion();
+  });
+  byId("q-next").addEventListener("click", function(){
+    var q = QUESTIONS[STATE.idx];
+    if(q.allowText){
+      var tv = byId("q-text").value.trim();
+      if(tv) STATE.goalText = tv;
+    }
+    if(STATE.answers[q.id] === undefined && !(q.allowText && STATE.goalText)) return;
+    if(STATE.idx === QUESTIONS.length - 1){ show("gate"); if(window.scrollTo) window.scrollTo(0,0); return; }
+    STATE.idx++; drawQuestion(); if(window.scrollTo) window.scrollTo(0,0);
+  });
+  byId("q-back").addEventListener("click", function(){
+    if(STATE.idx === 0) return;
+    STATE.idx--; drawQuestion(); if(window.scrollTo) window.scrollTo(0,0);
+  });
+  byId("l-back").addEventListener("click", function(){ show("quiz"); drawQuestion(); });
+}
+
+/* ===================== MODEL ===================== */
+function optOf(q){
+  var i = STATE.answers[q.id];
+  if(i === undefined) return null;
+  return q.opts[i] || null;
+}
+
+function buildModel(){
+  var m = {};
+
+  /* seat */
+  var sq = QUESTIONS[0], so = optOf(sq);
+  m.seatKey = so && so.seat ? so.seat : "brand";
+  m.seat = SEATS[m.seatKey];
+  m.seatLabel = so ? so.t : SEATS.brand.label;
+
+  /* areas + rows */
+  m.areas = AREAS.map(function(a){
+    var rows = [], sum = 0, cnt = 0;
+    SCORED.forEach(function(q){
+      if(q.area !== a.id) return;
+      var o = optOf(q);
+      var sc = (o && o.s !== null && o.s !== undefined) ? o.s : null;
+      rows.push({ q:q, prompt:q.prompt, answer:o ? o.t : "Not answered", score:sc });
+      if(sc !== null){ sum += sc; cnt++; }
+    });
+    return {
+      id:a.id, name:a.name, blurb:a.blurb, one:a.one, ten:a.ten,
+      rows:rows, score:cnt ? (sum / cnt) : null, answered:cnt, total:rows.length
+    };
+  });
+
+  var scoredAreas = m.areas.filter(function(a){ return a.score !== null; });
+  m.scoredAreaCount = scoredAreas.length;
+  m.unscoredAreas = m.areas.filter(function(a){ return a.score === null; });
+
+  if(scoredAreas.length){
+    var w = scoredAreas[0];
+    scoredAreas.forEach(function(a){ if(a.score < w.score) w = a; });
+    m.weakest = w;
+    m.avg = scoredAreas.reduce(function(t,a){ return t + a.score; }, 0) / scoredAreas.length;
+  } else {
+    m.weakest = null; m.avg = null;
+  }
+
+  /* band */
+  if(m.weakest){
+    for(var i = 0; i < BANDS.length; i++){
+      if(m.weakest.score < BANDS[i].max){ m.band = BANDS[i]; m.bandIdx = i; break; }
+    }
+    if(!m.band){ m.band = BANDS[BANDS.length-1]; m.bandIdx = BANDS.length-1; }
+    m.nextBand = BANDS[m.bandIdx + 1] || null;
+    m.toNext = m.nextBand ? (BANDS[m.bandIdx].max - m.weakest.score) : null;
+  } else { m.band = null; m.bandIdx = null; m.nextBand = null; m.toNext = null; }
+
+  /* gaps */
+  m.gaps = [];
+  SCORED.forEach(function(q){
+    var o = optOf(q);
+    if(!o || o.s === null || o.s === undefined) return;
+    if(o.s >= GAP_LINE) return;
+    m.gaps.push({
+      q:q, area:areaName(q.area), areaId:q.area, prompt:q.prompt, answer:o.t, score:o.s,
+      severity: o.s < 4 ? "High" : "Medium", fix:q.fix
+    });
+  });
+  m.gaps.sort(function(a,b){ return a.score - b.score; });
+  m.gaps.forEach(function(g,i){ g.n = i + 1; });
+
+  /* not sure list */
+  m.notSure = [];
+  QUESTIONS.forEach(function(q){
+    var o = optOf(q);
+    if(o && o.t === "Not sure") m.notSure.push(q.prompt);
+  });
+
+  /* sizing: the count */
+  var sizeQ = null, shareQ = null;
+  QUESTIONS.forEach(function(q){
+    if(q.sizing === "screens") sizeQ = q;
+    if(q.sizing === "share") shareQ = q;
+  });
+  var so2 = optOf(sizeQ), sh = optOf(shareQ);
+  m.screens = (so2 && so2.v !== null && so2.v !== undefined) ? so2.v : null;
+  m.screensLabel = so2 ? (so2.vl || so2.t) : null;
+  m.screensBand = so2 ? so2.t : null;
+  m.share = (sh && sh.v !== null && sh.v !== undefined) ? sh.v : null;
+  m.shareLabel = sh ? (sh.vl || sh.t) : null;
+  m.shareBand = sh ? sh.t : null;
+
+  m.countable = (m.screens !== null && m.share !== null);
+  m.missing = [];
+  if(m.screens === null) m.missing.push("how many screens there are");
+  if(m.share === null) m.missing.push("what share of them has not changed in a month");
+  m.count = m.countable ? Math.round(m.screens * m.share) : null;
+
+  /* levers start on their answers */
+  if(m.countable){
+    if(STATE.lev.screens === undefined) STATE.lev.screens = m.screens;
+    if(STATE.lev.share === undefined) STATE.lev.share = m.share;
+    m.levScreens = STATE.lev.screens;
+    m.levShare = STATE.lev.share;
+    m.levCount = Math.round(m.levScreens * m.levShare);
+  }
+
+  /* goal */
+  var gq = QUESTIONS[QUESTIONS.length - 1], go = optOf(gq);
+  m.goalArea = go && go.g ? go.g : null;
+  m.goalText = STATE.goalText || (go ? go.t : "");
+  m.goalTyped = !!STATE.goalText;
+
+  /* phases: from gaps, deduped by area, goal area promoted */
+  var seen = {}, phases = [];
+  m.gaps.forEach(function(g){
+    if(seen[g.areaId]) return;
+    seen[g.areaId] = true;
+    phases.push({ areaId:g.areaId, area:g.area, gap:g });
+  });
+  if(m.goalArea){
+    var gi = -1;
+    for(var p = 0; p < phases.length; p++){ if(phases[p].areaId === m.goalArea) gi = p; }
+    if(gi > 0){ var moved = phases.splice(gi,1)[0]; phases.unshift(moved); m.goalPromoted = true; }
+    else { m.goalPromoted = false; }
+  } else { m.goalPromoted = false; }
+  m.phases = phases.slice(0, 4);
+  m.extraPhases = phases.slice(4);
+
+  /* modules used */
+  var used = {}, mods = [];
+  m.gaps.forEach(function(g){
+    (g.fix.mods || []).forEach(function(k){ if(!used[k] && MODULES[k]){ used[k] = true; mods.push(MODULES[k]); } });
+  });
+  m.modules = mods;
+  m.hasNotOurs = m.gaps.some(function(g){ return g.fix.notOurs; });
+
+  /* fit read, never shown to the reader */
+  m.fit = fitRead(m);
+  return m;
+}
+
+function fitRead(m){
+  var pts = 0, why = [];
+  if(m.screens !== null){
+    var sp = m.screens >= 2000 ? 30 : m.screens >= 1000 ? 26 : m.screens >= 250 ? 19 : m.screens >= 60 ? 11 : 5;
+    pts += sp; why.push(m.screensLabel + " across the estate");
+  } else { pts += 8; why.push("could not say how many screens there are, which is itself a finding"); }
+
+  if(m.share !== null){
+    var hp = m.share >= 0.8 ? 25 : m.share >= 0.5 ? 19 : m.share >= 0.25 ? 11 : 3;
+    pts += hp; why.push(m.shareLabel + " have not changed in a month");
+  } else { pts += 10; why.push("could not say what share is stale, so nobody is watching it"); }
+
+  if(m.weakest){
+    var wp = Math.round((10 - m.weakest.score) * 2);
+    pts += wp; why.push("weakest area is " + m.weakest.name + " at " + one(m.weakest.score) + " of 10");
+  }
+
+  var seatPts = { sports:12, brand:11, venue:9, agency:6 }[m.seatKey] || 8;
+  pts += seatPts; why.push("reading it as " + m.seat.label.toLowerCase());
+
+  var gp = Math.min(10, m.gaps.length * 2);
+  pts += gp; why.push(m.gaps.length + (m.gaps.length === 1 ? " gap found" : " gaps found"));
+
+  var b3 = optOf(QUESTIONS.filter(function(q){ return q.id === "b3"; })[0]);
+  if(b3 && b3.t.indexOf("No. Every change") === 0){ pts += 3; why.push("nothing on the screens changes without a person"); }
+
+  var band = pts >= 70 ? "PRIORITY" : pts >= 52 ? "CORE" : pts >= 35 ? "POSSIBLE" : "WATCH";
+  var motion = band === "PRIORITY" ? "Call this week. Lead with the count and the weakest area."
+    : band === "CORE" ? "Worth a call. Lead with the first move in Part 4."
+    : band === "POSSIBLE" ? "Keep warm. Send the report and follow up next quarter."
+    : "No action. Estate is small or already well run.";
+  return { band:band, points:pts, reasons:why, motion:motion };
+}
+
+/* ===================== REPORT ===================== */
+function todayStr(){
+  var d = new Date();
+  var mo = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  return d.getDate() + " " + mo[d.getMonth()] + " " + d.getFullYear();
+}
+
+function deliveryLine(){
+  var c = STATE.cfg;
+  if(!c) return "This copy is open as a file with no server behind it, so nothing you typed has left this page. Use Download this report at the end to keep it.";
+  if(c.live && c.email_enabled) return "Your details have reached the OneRevel team and a copy is on its way to your inbox. Use Download this report at the end to keep one here too.";
+  if(c.live) return "Your details have reached the OneRevel team. Email delivery is not switched on in this build, so nothing has been sent to your inbox: use Download this report at the end to keep a copy.";
+  return "This copy is open as a file with no server behind it, so nothing you typed has left this page. Use Download this report at the end to keep it.";
+}
+
+function bandStrip(m){
+  var out = '<div class="vstrip">';
+  for(var i = 0; i < BANDS.length; i++){
+    var b = BANDS[i];
+    var lo = i === 0 ? "under 4" : (i === BANDS.length-1 ? "8 or above" : BANDS[i-1].max + " to " + b.max);
+    var you = (m.bandIdx === i);
+    out += '<div class="vband' + (you ? " you" : "") + '">';
+    if(you) out += '<span class="youtag">YOU · ' + one(m.weakest.score) + '</span>';
+    out += '<div class="rng">' + lo + '</div><div class="nm">' + esc(b.name) + '</div><div class="ms">' + esc(b.mean) + '</div></div>';
+  }
+  return out + '</div>';
+}
+
+function part1(m){
+  var h = '<section class="part" id="p1"><div class="wrap"><div class="parthead"><div class="partno">Part 1</div><h2 class="sec">The diagnosis</h2></div>';
+  h += '<p class="lede">Four areas, each scored 1 to 10 from the answers you tapped. The verdict follows your weakest area, never the average. That is not a scoring quirk: the screen nobody is deciding about is the one somebody is standing in front of right now.</p>';
+
+  /* 15 second summary */
+  h += '<div class="panel"><h3>Your diagnosis in 15 seconds</h3><ul class="bullets">';
+  if(m.countable){
+    h += '<li>Around <span class="strong">' + n0(m.count) + '</span> of your screens are showing a message nobody chose this month. The sum is printed in full in Part 2.</li>';
+  } else {
+    h += '<li>No count is printed for you, because you told us you were not sure about ' + esc(m.missing.join(" and ")) + '. Part 2 explains why we did not substitute a figure of ours.</li>';
+  }
+  if(m.weakest){
+    h += '<li>Your weakest of ' + m.scoredAreaCount + ' scored areas is <span class="strong">' + esc(m.weakest.name) + '</span> at ' + one(m.weakest.score) + ' of 10, which lands in ' + esc(m.band.name) + '.</li>';
+  } else {
+    h += '<li>None of the four areas could be scored, because every scoring answer came back as Not sure. That is a finding in itself, and Part 3 still has something to say about it.</li>';
+  }
+  if(m.gaps.length === 0){
+    h += '<li>No gaps were found. Every scoring answer came in at 6.5 of 10 or above, so Part 3 is short and says so.</li>';
+  } else {
+    h += '<li>' + m.gaps.length + (m.gaps.length === 1 ? ' gap found' : ' gaps found') + ', each named in your own words and matched to its fix in Part 3.</li>';
+  }
+  if(m.hasNotOurs){
+    h += '<li>One of those gaps is deliberately not matched to anything OneRevel sells, because it is not theirs to close. It is marked where it appears.</li>';
+  }
+  h += '<li>Everything below is written for your seat: ' + esc(m.seatLabel) + '.</li>';
+  h += '</ul></div>';
+
+  /* seat card */
+  h += '<div class="seatcard"><h4>Read from your seat</h4><p class="small" style="margin:0">' + esc(m.seat.read) + '</p></div>';
+
+  /* band strip */
+  if(m.weakest){
+    h += '<h3 style="margin-top:26px">Where you sit</h3>';
+    h += '<p class="small">' + esc(m.band.mean) + ' Your weakest of ' + m.scoredAreaCount + ' scored areas is ' + esc(m.weakest.name) + ' at ' + one(m.weakest.score) + ' of 10.</p>';
+    h += bandStrip(m);
+    if(m.nextBand){
+      h += '<p class="tiny" style="margin-top:10px">The next rung up starts at ' + BANDS[m.bandIdx].max + '. You are ' + one(m.toNext) + ' points on ' + esc(m.weakest.name) + ' away from it. A 10 does not exist here: the distance to 10 is what the plan in Part 4 is for.</p>';
+    } else {
+      h += '<p class="tiny" style="margin-top:10px">This is the top rung. There is nothing above it, so Part 4 is about holding the position rather than climbing to a new one.</p>';
+    }
+  }
+
+  /* KPI row */
+  h += '<div class="cardgrid" style="margin-top:20px">';
+  if(m.countable){
+    h += '<div class="kpi"><div class="lb">Screens on an old message</div><div class="vl">' + n0(m.count) + '</div><div class="nt">Your two figures, one multiplication. Worked in Part 2.</div></div>';
+  } else {
+    h += '<div class="kpi"><div class="lb">Screens on an old message</div><div class="vl">Not printed</div><div class="nt">One of the two figures was Not sure. Part 2 says which.</div></div>';
+  }
+  if(m.weakest){
+    h += '<div class="kpi"><div class="lb">Weakest area</div><div class="vl" style="font-size:22px">' + esc(m.weakest.name) + '</div><div class="nt">' + one(m.weakest.score) + ' of 10. The verdict is set here, never by the average.</div></div>';
+    h += '<div class="kpi"><div class="lb">Overall score</div><div class="vl">' + Math.round((m.avg/10)*100) + '%</div><div class="nt">The average of your ' + m.scoredAreaCount + ' scored areas. 70% and above is strong.</div></div>';
+  }
+  h += '<div class="kpi"><div class="lb">Gaps found</div><div class="vl">' + m.gaps.length + '</div><div class="nt">Answers under 6.5 of 10. Every one is named in Part 3.</div></div>';
+  h += '</div>';
+
+  /* areas */
+  h += '<h3 style="margin-top:30px">Four areas, each scored from your answers</h3>';
+  h += '<p class="small">Each area runs 1 to 10 and states what a 1 and a 10 look like, so the number has something to mean. Under each one, every answer that fed it is shown as its own scored row, so nothing is averaged out of sight.</p>';
+  h += '<p class="note">The shaded band on each bar marks 4 to 7, where most estates land. Below it is a live gap. Above it is genuinely strong. Where a row below shows no number, that answer was Not sure, which scores nothing rather than zero, because not knowing is a different finding from doing badly.</p>';
+  if(m.unscoredAreas.length){
+    h += '<p class="note">' + (m.unscoredAreas.length === 1 ? 'One area could not be scored' : m.unscoredAreas.length + ' areas could not be scored') + ', because every question feeding ' + (m.unscoredAreas.length === 1 ? 'it' : 'them') + ' came back as Not sure. Those areas show no bar and no number rather than a guess.</p>';
+  }
+
+  m.areas.forEach(function(a){
+    var wk = (m.weakest && m.weakest.id === a.id);
+    h += '<div class="arearow"><div class="areatop"><h4 class="areaname">' + esc(a.name) + (wk ? '<span class="wktag">Weakest</span>' : '') + '</h4>';
+    h += '<div class="areascore">' + (a.score === null ? 'Not scored' : one(a.score) + ' of 10') + '</div></div>';
+    h += '<p class="small" style="margin:6px 0 0">' + esc(a.blurb) + '</p>';
+    if(a.score !== null){
+      h += '<div class="track"><span class="shade"></span><i style="width:' + Math.round(a.score*10) + '%"></i></div>';
+    } else {
+      h += '<div class="track"><span class="shade"></span></div>';
+    }
+    h += '<div class="anchors"><span><b>1 looks like:</b> ' + esc(a.one) + '</span><span><b>10 looks like:</b> ' + esc(a.ten) + '</span></div>';
+    a.rows.forEach(function(r, ri){
+      h += '<div class="qrow"><p class="qp">' + esc(r.prompt) + '</p>';
+      h += '<p class="qa">You answered <span class="quote">' + esc(r.answer) + '</span>, ';
+      h += r.score === null
+        ? 'so row ' + (ri+1) + ' of ' + esc(a.name) + ' carries no number.'
+        : 'so row ' + (ri+1) + ' of ' + esc(a.name) + ' scored <span class="qs">' + one(r.score) + '</span> of 10.';
+      h += '</p></div>';
+    });
+    h += '</div>';
+  });
+
+  /* first move */
+  if(m.phases.length){
+    var f = m.phases[0];
+    h += '<div class="panel" style="border-color:var(--green);border-width:2px;margin-top:20px">';
+    h += '<p class="eyebrow">Start here · your first move</p><h3>' + esc(f.gap.fix.move) + '</h3>';
+    h += '<p class="small" style="margin:0">' + esc(f.gap.fix.first) + ' The order behind this, and the moves that follow it, are set out in Part 4.</p></div>';
+  }
+  h += '<p class="tiny" style="margin-top:16px">That is the diagnosis. Next: the one number underneath it.</p>';
+  return h + '</div></section>';
+}
+
+function part2(m){
+  var h = '<section class="part" id="p2"><div class="wrap"><div class="parthead"><div class="partno">Part 2</div><h2 class="sec">The count</h2></div>';
+  h += '<p class="lede">One number, built from two figures you gave us and nothing else. There are no prices in this report, and no figure here is a OneRevel price. This section counts. It deliberately does not cost.</p>';
+
+  if(m.countable){
+    h += '<div class="panel"><h3>The number, and exactly where it came from</h3><ul class="bullets">';
+    h += '<li>We asked how many screens you have across everything · you answered <span class="quote">' + esc(m.screensBand) + '</span> · read as ' + esc(m.screensLabel) + '</li>';
+    h += '<li>We asked what share has not changed in the last month · you answered <span class="quote">' + esc(m.shareBand) + '</span> · read as ' + esc(m.shareLabel) + '</li>';
+    h += '</ul>';
+    h += '<div class="calcline">' + n0(m.screens) + ' screens × ' + pct(m.share) + ' = ' + n0(m.count) + '</div>';
+    h += '<div class="bignum">' + n0(m.count) + '</div>';
+    h += '<p class="small" style="margin:0">Screens showing a message nobody chose this month. Both figures are yours. The only thing this report added was the multiplication sign, and each band you tapped was read as the single stated value printed beside it rather than a hidden range, so this is one checkable number instead of a wide spread.</p></div>';
+
+    h += '<div class="cardgrid" style="margin-top:14px">';
+    h += '<div class="kpi"><div class="lb">Screens you are deciding about</div><div class="vl">' + n0(m.screens) + '</div><div class="nt">The size band you tapped, read as the single figure printed beside it.</div></div>';
+    h += '<div class="kpi"><div class="lb">Share that has not moved</div><div class="vl">' + pct(m.share) + '</div><div class="nt">The freshness band you tapped, read as the single share printed beside it.</div></div>';
+    h += '<div class="kpi"><div class="lb">Screens still saying something chosen</div><div class="vl">' + n0(m.screens - m.count) + '</div><div class="nt">The rest of the estate. This is the part already working.</div></div>';
+    h += '</div>';
+
+    /* levers */
+    h += '<div class="panel" style="margin-top:14px"><p class="eyebrow">Live</p><h3>Test the number: move the sliders, the figure follows</h3>';
+    h += '<p class="small">The sliders start on the answers you gave. The printed sum above never changes: it stays exactly as you answered it.</p>';
+    h += '<div class="sliderow" style="margin-top:14px"><label for="lev-screens" style="color:var(--muted)">Screens across everything <b id="lev-screens-v" style="color:var(--text)">' + n0(m.levScreens) + '</b></label>';
+    h += '<input type="range" id="lev-screens" min="10" max="4000" step="10" value="' + m.levScreens + '"></div>';
+    h += '<div class="sliderow"><label for="lev-share" style="color:var(--muted)">Share that has not changed in a month <b id="lev-share-v" style="color:var(--text)">' + pct(m.levShare) + '</b></label>';
+    h += '<input type="range" id="lev-share" min="0" max="100" step="1" value="' + Math.round(m.levShare*100) + '"></div>';
+    h += '<div class="cardgrid" style="margin-top:12px"><div class="kpi"><div class="lb">Screens on an old message</div><div class="vl" id="lev-out">' + n0(m.levCount) + '</div><div class="nt">These are the answers you gave.</div></div></div>';
+    h += '<button class="linkbtn" id="lev-reset">Reset to your answers</button>';
+    h += '<p class="note">You will not find a third slider here carrying an assumption of ours. There is nothing in this number that you did not tell us, so there is nothing of ours for you to disagree with.</p></div>';
+  } else {
+    h += '<div class="panel"><h3>The number we are not going to print</h3>';
+    h += '<p>A count needs two figures, and you told us you were not sure about ' + esc(m.missing.join(" and ")) + '. We could substitute a planning figure of ours and print something that looks authoritative, and it would be the only invented number in the whole report.</p>';
+    h += '<p style="margin-bottom:0">So there is no count on your run. Not knowing is the finding: an estate whose size or freshness cannot be stated from memory is an estate nobody is currently watching, and that is worth more than a figure would have been.</p></div>';
+  }
+
+  /* refusal block */
+  h += '<div class="panel" style="margin-top:14px"><h3>What this number deliberately does not become</h3>';
+  h += '<p>It stays a count. It is never turned into money, and that is a choice rather than an oversight. To price a screen running an old message, somebody would have to know three things, and this report will not guess any of them:</p>';
+  h += '<ul class="bullets"><li>What a person standing in front of that screen is worth to you.</li><li>How many of them would have done something different if the message had been current.</li><li>What your screen time is worth to whoever you promised it to, if you promised it to anybody.</li></ul>';
+  h += '<p style="margin-bottom:0">Those are three real numbers and they belong to you, not to a web page. A count you can check beats a saving you have to take on trust.</p></div>';
+
+  /* client figures as context, not multiplied */
+  h += '<div class="panel" style="margin-top:14px"><h3>OneRevel’s own published figures, deliberately not multiplied by anything of yours</h3>';
+  h += '<p class="small">These are theirs, from their own site and from Brian Fitzpatrick directly. They are here as context. None of them has been applied to your estate, because a benchmark from somebody else’s customers is not a prediction about yours.</p>';
+  h += '<div class="cardgrid"><div class="kpi"><div class="lb">Content built</div><div class="vl">350,000+</div><div class="nt">Unique pieces of digital signage content, built before AI, by designers.</div></div>';
+  h += '<div class="kpi"><div class="lb">Retention</div><div class="vl">98%</div><div class="nt">Customer retention since the company began, 17 years ago.</div></div>';
+  h += '<div class="kpi"><div class="lb">Advertiser attrition, before the pivot</div><div class="vl">97%</div><div class="nt">The figure that made OneRevel leave the advertising business, because nobody could show the value.</div></div></div></div>';
+
+  h += '<p class="tiny" style="margin-top:16px">The count is the symptom. Part 3 names every gap behind it, and who owns closing each one.</p>';
+  return h + '</div></section>';
+}
+
+function part3(m){
+  var h = '<section class="part" id="p3"><div class="wrap"><div class="parthead"><div class="partno">Part 3</div><h2 class="sec">The fix map</h2></div>';
+  h += '<p class="lede">Every gap matched to the part of OneRevel accountable for closing it, in the same format each time, because a gap with no named owner is just a complaint. No packages and no price list.</p>';
+
+  h += '<div class="handshake"><p><strong>One honest caveat before the map.</strong> OneRevel publishes a seven phase framework, Why Revel, describing what it takes to build and run a screen estate: the displays, the install, content delivery, the interface, content creation, business integration and the support that stays with you.</p>';
+  h += '<p>Their seven phases describe what it takes to run an estate. This tells you what yours is saying this week. Several of the fixes below are named phases from that framework, so you can see exactly which part of their own published model each gap sits in.</p></div>';
+
+  if(m.modules.length){
+    h += '<h3 style="margin-top:24px">The parts of OneRevel doing the work</h3>';
+    h += '<p class="small">Every fix below names one or more of these, so accountability is never vague. Nothing here carries a price.</p>';
+    h += '<div class="modgrid">';
+    m.modules.forEach(function(x){ h += '<div class="modcard"><b>' + esc(x.n) + '</b><span>' + esc(x.d) + '</span></div>'; });
+    h += '</div>';
+  }
+
+  if(!m.gaps.length){
+    h += '<div class="panel" style="margin-top:20px"><h3>No gaps on your run</h3>';
+    h += '<p style="margin-bottom:0">Every scoring answer came in at 6.5 of 10 or above, so there is no map to draw. That is a genuine result and this report is not going to invent a problem to fill the space. If it does not match how it feels on the ground, the questions that scored best are the ones worth arguing with first.</p></div>';
+  } else {
+    h += '<h3 style="margin-top:26px">Every gap, in your words, worst first · ' + m.gaps.length + ' found</h3>';
+    h += '<p class="small">Every scoring answer under 6.5 of 10 is a gap. Under 4 is High severity, 4 to 6.5 is Medium. The unit is one answer, not one area, so two gaps can sit in the same area and each still gets its own card. It is a directional list to prioritise a conversation, not a substitute for somebody walking your building.</p>';
+
+    m.gaps.forEach(function(g){
+      var hi = g.severity === "High";
+      h += '<div class="gapcard' + (hi ? ' high' : '') + '">';
+      h += '<div class="gaptop"><span class="gapno">Gap ' + g.n + ' of ' + m.gaps.length + ' · ' + esc(g.area) + '</span><span class="sev' + (hi ? ' high' : '') + '">' + g.severity + ' severity</span></div>';
+      h += '<p class="gq">' + esc(g.prompt) + '</p>';
+      h += '<p class="metaline">You answered <span class="quote">' + esc(g.answer) + '</span>, which scored ' + one(g.score) + ' of 10 in the ' + esc(g.area) + ' area, and that is what makes it gap ' + g.n + ' of ' + m.gaps.length + ' on this list.</p>';
+      h += '<h4>Why it hurts</h4><p class="small">' + esc(g.fix.hurts) + '</p>';
+      h += '<div class="fixbox">';
+      if(g.fix.notOurs){
+        h += '<div class="fixrow"><span class="fl">The fix, and who owns it</span><p class="fv"><strong>' + esc(g.fix.work) + '</strong></p></div>';
+        h += '<div class="fixrow"><span class="fl">Why no module is named</span><p class="fv">' + esc(g.fix.closes) + '</p></div>';
+      } else {
+        h += '<div class="fixrow"><span class="fl">The work</span><p class="fv">' + esc(g.fix.work) + '</p></div>';
+        h += '<div class="fixrow"><span class="fl">Why it closes this</span><p class="fv">' + esc(g.fix.closes) + '</p></div>';
+      }
+      h += '<div class="fixrow"><span class="fl">What good looks like</span><p class="fv">' + esc(g.fix.good) + '</p></div>';
+      h += '</div></div>';
+    });
+
+    if(m.hasNotOurs){
+      h += '<div class="note">One card above names no OneRevel module at all. That is deliberate. A supplier can build the moment in your building. Deciding what that moment is supposed to be is a product decision, and it belongs to whoever owns the building, not to whoever wires it.</div>';
+    }
+  }
+
+  h += '<p class="tiny" style="margin-top:16px">A map is not a plan. Part 4 puts it in order.</p>';
+  return h + '</div></section>';
+}
+
+function trajectorySvg(m){
+  if(!m.countable || !m.phases.length) return "";
+  var start = m.count;
+  var shares = [0.15, 0.35, 0.55].slice(0, m.phases.length);
+  var pts = [{ lb:"Today", v:start }];
+  shares.forEach(function(s, i){ pts.push({ lb:"Day " + ((i+1)*30), v:Math.round(start * (1 - s)) }); });
+
+  var narrow = (typeof window !== "undefined" && window.innerWidth) ? window.innerWidth < 700 : false;
+  var W = 720, H = narrow ? 210 : 240;
+  var padL = narrow ? 52 : 64, padR = 18, padT = 26, padB = 34;
+  var pw = W - padL - padR, ph = H - padT - padB;
+
+  var max = start;
+  var step = Math.pow(10, Math.floor(Math.log(Math.max(1,max/4)) / Math.LN10));
+  var mult = [1,2,2.5,5,10];
+  var chosen = step;
+  for(var mi = 0; mi < mult.length; mi++){ if(step * mult[mi] >= max/4){ chosen = step * mult[mi]; break; } }
+  var top = chosen * Math.ceil(max / chosen);
+  if(top < max * 1.12) top = top + chosen;
+
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Screens on an old message, falling across ninety days" style="display:block">';
+  s += '<style>.ax{font-family:Helvetica,Arial,sans-serif;font-size:10.5px;fill:#5D6562}.vl2{font-family:Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;fill:#161A18}.un{font-family:Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;fill:#5D6562}</style>';
+  s += '<text class="un" x="' + padL + '" y="12">SCREENS ON AN OLD MESSAGE</text>';
+  for(var g = 0; g <= 4; g++){
+    var vy = padT + ph - (ph * (g/4));
+    var vv = Math.round(top * (g/4));
+    s += '<line x1="' + padL + '" y1="' + vy + '" x2="' + (padL+pw) + '" y2="' + vy + '" stroke="#E3E7E4" stroke-width="1"/>';
+    s += '<text class="ax" x="' + (padL-8) + '" y="' + (vy+3.5) + '" text-anchor="end">' + n0(vv) + '</text>';
+  }
+  var dx = pw / Math.max(1, pts.length - 1);
+  var path = "";
+  pts.forEach(function(p, i){
+    var x = padL + i * dx, y = padT + ph - (ph * (p.v / top));
+    path += (i === 0 ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1);
+  });
+  s += '<path d="' + path + '" fill="none" stroke="#6AB432" stroke-width="2.6" stroke-linejoin="round"/>';
+  pts.forEach(function(p, i){
+    var x = padL + i * dx, y = padT + ph - (ph * (p.v / top));
+    s += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.5" fill="#6AB432" stroke="#fff" stroke-width="1.6"/>';
+    var anch = i === 0 ? "start" : (i === pts.length-1 ? "end" : "middle");
+    s += '<text class="vl2" x="' + x.toFixed(1) + '" y="' + (y-11).toFixed(1) + '" text-anchor="' + anch + '">' + n0(p.v) + '</text>';
+    s += '<text class="ax" x="' + x.toFixed(1) + '" y="' + (padT+ph+18) + '" text-anchor="' + anch + '">' + p.lb + '</text>';
+  });
+  return s + '</svg>';
+}
+
+function part4(m){
+  var h = '<section class="part" id="p4"><div class="wrap"><div class="parthead"><div class="partno">Part 4</div><h2 class="sec">The plan</h2></div>';
+  h += '<p class="lede">One move first, then ninety days in order. The rule is printed so you can check it: moves run from the area holding your worst single answer, with one stated exception, which is that the area your goal points at goes first.</p>';
+
+  h += '<div class="panel"><p class="eyebrow">Your twelve month goal, in your words</p>';
+  h += '<p style="font-size:19px;font-weight:700;line-height:1.35;margin:0 0 8px">' + esc(m.goalText) + '</p>';
+  h += '<p class="small" style="margin:0">' + (m.goalTyped ? 'You typed that yourself, so it is quoted exactly as written and never scored.' : 'You tapped that from the four options offered.') + ' Every phase below is filtered through it. ' + (m.goalPromoted ? 'That exception fired on your run: your goal moved its area to the front of the order.' : 'On your run the exception did not fire, so the phases are in plain worst first order.') + '</p></div>';
+
+  if(!m.phases.length){
+    h += '<div class="panel" style="margin-top:14px"><h3>No phases to sequence</h3><p style="margin-bottom:0">There were no gaps, so there is nothing here to put in order. The honest plan for an estate in this shape is to keep doing what you are already doing, and to re run this check when the estate grows or the person who owns it changes.</p></div>';
+  } else {
+    /* today / day 90 */
+    h += '<div class="cols2" style="margin-top:14px">';
+    h += '<div class="mini"><p class="eyebrow">Today · current state</p>';
+    m.phases.slice(0,3).forEach(function(p){
+      h += '<p class="small" style="margin:0 0 8px"><b>' + esc(p.gap.prompt) + '</b><br><span class="quote">' + esc(p.gap.answer) + '</span></p>';
+    });
+    h += '</div>';
+    h += '<div class="mini"><p class="eyebrow">Day 90 · where this gets you</p><ul class="bullets" style="font-size:13.5px">';
+    m.phases.slice(0,3).forEach(function(p, i){
+      h += '<li>' + esc(p.gap.fix.move) + (i === 0 ? ', delivered as one contained piece of work with a measured before and after.' : ', underway with a named owner.') + '</li>';
+    });
+    h += '<li>The move after that is chosen from the evidence in this report, not from whatever went wrong that week.</li>';
+    h += '</ul></div></div>';
+
+    h += '<h3 style="margin-top:26px">Your first 90 days, each phase with a named owner</h3>';
+    h += '<p class="small">Every phase names the part of OneRevel doing the work, so nothing is ownerless.</p>';
+    var windows = [["Prove it","Weeks 1 to 4"],["Connect it","Weeks 5 to 9"],["Compound","Weeks 10 to 13"],["Follows the 90 days","After"]];
+    m.phases.forEach(function(p, i){
+      var w = windows[i] || windows[3];
+      var mods = (p.gap.fix.mods || []).map(function(k){ return MODULES[k] ? MODULES[k].n : ""; }).filter(Boolean);
+      h += '<div class="phase"><div class="phasetag">' + w[0] + ' · ' + w[1] + '</div>';
+      h += '<h4 style="font-size:18px">' + esc(p.gap.fix.move) + '</h4>';
+      h += '<p class="small" style="margin:0">' + esc(p.gap.fix.plan) + '</p>';
+      h += '<p class="phasedel">Delivered by: ' + (mods.length ? esc(mods.join(" + ")) : "you, not a supplier") + '</p>';
+      h += '<p class="pwhy">Why it sits here: it came out of ' + esc(p.area) + ', which held your answer of ' + one(p.gap.score) + ' of 10' + ((m.goalPromoted && i === 0) ? ', and your goal points straight at it' : '') + '.</p>';
+      h += '</div>';
+    });
+    if(m.extraPhases.length){
+      h += '<p class="note">' + m.extraPhases.length + ' further ' + (m.extraPhases.length === 1 ? 'area' : 'areas') + ' held gaps and did not make the first ninety days. They are not dropped: they held less damaging answers than the phases above, so they wait their turn rather than diluting the first three.</p>';
+    }
+    h += '<p class="note">The week ranges above are a stated planning shape, not a commitment and not a quote. They exist so the phases have an order you can argue with.</p>';
+
+    /* trajectory */
+    if(m.countable){
+      var svg = trajectorySvg(m);
+      if(svg){
+        h += '<h3 style="margin-top:26px">The trajectory: how the count moves as each phase lands</h3>';
+        h += '<div class="chartwrap">' + svg + '</div>';
+        h += '<p class="note">How to read it: the line starts at your Part 2 count of ' + n0(m.count) + ' and falls as each phase lands, by 15%, then 35%, then 55% cumulatively. Worked in your own figure: day 90 is ' + n0(m.count) + ' × 45% = ' + n0(Math.round(m.count*0.45)) + ' screens still on an old message. Those three percentages are conservative planning assumptions so the line can be drawn. They are not OneRevel claims and they are not measured results. The starting figure is yours.</p>';
+      }
+    }
+
+    /* pilot */
+    var f = m.phases[0];
+    h += '<div class="panel" style="border-color:var(--green);border-width:2px;margin-top:18px">';
+    h += '<p class="eyebrow">Start small, stack wins</p><h3>The smallest version of phase one</h3>';
+    h += '<p>Pick one part of ' + esc(m.seat.place) + ' and do ' + esc(f.gap.fix.move.toLowerCase()) + ' there only. Measure two things against Part 2: how many of those screens were on an old message before, and how many are after.</p>';
+    h += '<p style="margin-bottom:0">This is how OneRevel’s own customers usually start. Brian Fitzpatrick describes a twenty thousand dollar suite remodel that became a whole bowl of LED three years later, because the small piece proved the partner before anything big was committed. Small enough to say yes to this month, real enough to change how next quarter runs.</p></div>';
+  }
+  h += '<p class="tiny" style="margin-top:16px">If the plan looks right, check the workings. Part 5 shows them.</p>';
+  return h + '</div></section>';
+}
+
+function part5(m){
+  var h = '<section class="part" id="p5"><div class="wrap"><div class="parthead"><div class="partno">Part 5</div><h2 class="sec">The receipts</h2></div>';
+  h += '<p class="lede">Every answer changed something in this report, and here is the trace, so you can check the working. If this was forwarded to you: it came from a four minute check answered by a colleague, and everything above traces back to what is listed here.</p>';
+
+  QUESTIONS.forEach(function(q){
+    var o = optOf(q);
+    if(!o && !(q.allowText && STATE.goalText)) return;
+    var ans = o ? o.t : "";
+    var effect = "";
+    if(q.type === "seat"){
+      effect = "Set the seat this report is written for. It changes the language throughout, and never the scoring rules.";
+    } else if(q.type === "goal"){
+      effect = "Quoted at the top of Part 4. Every phase is filtered through it, and it can move its area to the front of the order.";
+    } else if(q.sizing === "screens"){
+      effect = "One of the two figures behind the count in Part 2 and the trajectory in Part 4. It is a sizing answer and carries no score.";
+    } else if(q.sizing === "share"){
+      effect = o.s === null
+        ? "This question does two jobs, and both went unanswered: it would have scored What is on them, and it is one of the two figures behind the count in Part 2."
+        : "This question did two jobs: it scored What is on them at " + one(o.s) + ", and it supplied the share behind the count in Part 2.";
+    } else if(q.type === "scored"){
+      var gi = null;
+      m.gaps.forEach(function(g){ if(g.q.id === q.id) gi = g.n; });
+      var rowIdx = 0, ar = null;
+      m.areas.forEach(function(a){ a.rows.forEach(function(r,ri){ if(r.q.id === q.id){ rowIdx = ri + 1; ar = a; } }); });
+      if(o.s === null){
+        effect = "Left as Not sure, so it scored nothing in " + areaName(q.area) + " rather than zero, and row " + rowIdx + " of that area shows no number.";
+      } else if(gi){
+        effect = "Scored " + areaName(q.area) + " at " + one(o.s) + " as row " + rowIdx + " of that area, and became gap card " + gi + " in Part 3.";
+      } else {
+        effect = "Scored " + areaName(q.area) + " at " + one(o.s) + " as row " + rowIdx + " of that area, which is at or above 6.5, so no gap card was raised for it.";
+      }
+    }
+    h += '<div class="rt"><p class="rq"><span class="tapped">' + (q.allowText && STATE.goalText && q.type === "goal" ? "TYPED" : "TAPPED") + '</span>In answer to: ' + esc(q.prompt) + '</p>';
+    h += '<p class="ra">' + esc(q.type === "goal" && STATE.goalText ? STATE.goalText : ans) + '</p>';
+    h += '<p class="re">' + esc(effect) + '</p></div>';
+  });
+
+  if(m.notSure.length){
+    h += '<div class="note">' + m.notSure.length + (m.notSure.length === 1 ? ' answer came back as Not sure' : ' answers came back as Not sure') + '. Nothing was substituted for any of them. Where one of those answers was load bearing, the report says so at the point where the figure would have appeared.</div>';
+  }
+  h += '<p class="tiny" style="margin-top:14px">Nothing you told us was decorative. If an answer is not listed above, it was not asked.</p>';
+  return h + '</div></section>';
+}
+
+function appendix(m){
+  var h = '<section class="part" id="pa"><div class="wrap"><div class="parthead"><div class="partno">Appendix</div><h2 class="sec">How to read this report</h2></div>';
+  h += '<p class="lede">This glossary travels with the report, because reports get forwarded to people who never saw the questions.</p><div class="gloss">';
+  var g = [
+    ["The Screen Time Check","A four minute check scoring what a screen estate is saying right now. It is not a survey of your hardware, not a site audit and not a quote, and nothing in it touched any of your systems."],
+    ["The five parts","Part 1 diagnoses, Part 2 counts, Part 3 matches every gap to the part of OneRevel that owns it, Part 4 sequences the first 90 days, Part 5 shows the working."],
+    ["The verdict bands","Four rungs, from Screens, not a message up to Your message matters, each defined where it appears. Your band is set by your weakest area and is never averaged up."],
+    ["The four areas","What is on them, How fast it changes, What it is up against, What you can show for it. Each is scored 1 to 10 from tapped answers, with anchors saying what a 1 and a 10 look like."],
+    ["Why the weakest area decides","An estate is judged by the worst screen somebody happens to be standing in front of, not by the average of all of them. The verdict follows that logic."],
+    ["What counts as a gap","Every scoring answer under 6.5 of 10, listed worst first in Part 3 only, each one beside the part of OneRevel that closes it. The severity rule that sorts them into High and Medium is printed at the top of that section."],
+    ["Not sure","A real answer everywhere. It scores nothing rather than zero, because not knowing is a different finding from doing badly, and it is recorded as its own line in Part 5."],
+    ["The count","Screens multiplied by the share that has not changed in a month. Both figures are yours, the arithmetic is printed, and the result is never converted into money anywhere in this report."],
+    ["Why there is no money in it","Pricing a stale screen needs three figures that belong to you and were never asked for. They are named in Part 2, and guessing them would have been the only invented number here."],
+    ["Why Revel","OneRevel’s own published seven phase framework: Display and Players, Expert Installation, Content Delivery Systems, Cloud-Based Interface, Simple Content Creation, Business Integration, Reliable Connectivity. Several fixes in Part 3 name a phase from it directly."],
+    ["Channel Valet","OneRevel’s own content platform, linked from their site navigation. It is where content is scheduled and pushed to screens."],
+    ["The trajectory percentages","15, 35 and 55 percent, cumulative, conservative, applied to your own count so a line can be drawn. They are stated planning assumptions, not OneRevel claims and not measured results."]
+  ];
+  g.forEach(function(r){ h += '<div class="gl"><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></div>'; });
+  h += '</div>';
+  return h + '</div></section>';
+}
+
+function drawReport(m){
+  var host = byId("report");
+  var nm = STATE.lead.name || "you";
+  var org = STATE.lead.org || "your estate";
+
+  var h = '<div class="repnav"><ul>';
+  h += '<li><a href="#p1">1 · Diagnosis</a></li><li><a href="#p2">2 · The count</a></li><li><a href="#p3">3 · Fix map</a></li><li><a href="#p4">4 · Plan</a></li><li><a href="#p5">5 · Receipts</a></li><li><a href="#pa">Appendix</a></li>';
+  h += '</ul></div>';
+
+  h += '<div class="rephead"><div class="dotfield"></div><div class="wrap" style="position:relative;z-index:2">';
+  h += '<div class="brandmark" style="margin-bottom:16px"><svg class="mk" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 5h7l5 12 5-12h7L19 27h-6L4 5z" fill="#7FCB42"/></svg><span class="nm">OneRevel</span></div>';
+  h += '<p class="eyebrow on-dark">The Screen Time Check</p>';
+  if(m.weakest){
+    h += '<h1 class="display" style="color:#fff;font-size:clamp(30px,5vw,58px)">' + esc(m.band.name) + '</h1>';
+    h += '<p class="hero-lede" style="max-width:62ch">' + esc(m.band.mean) + ' Your weakest of ' + m.scoredAreaCount + ' scored areas is ' + esc(m.weakest.name) + ' at ' + one(m.weakest.score) + ' of 10, and the verdict follows the weakest area rather than the average.</p>';
+  } else {
+    h += '<h1 class="display" style="color:#fff;font-size:clamp(30px,5vw,58px)">Nothing scored</h1>';
+    h += '<p class="hero-lede" style="max-width:62ch">Every scoring answer came back as Not sure, so there is no verdict to give and this report does not invent one. That is a finding of its own, and the rest of the report is written around it.</p>';
+  }
+  h += '<p class="tiny" style="color:rgba(255,255,255,0.55);margin-top:10px">Prepared for ' + esc(nm) + ' at ' + esc(org) + ' · ' + esc(m.seatLabel) + ' · ' + todayStr() + '</p>';
+  if(m.weakest) h += bandStrip(m);
+  h += '<div class="note" style="background:rgba(255,255,255,0.05);border-color:var(--line-dark);color:rgba(255,255,255,0.7)">' + esc(deliveryLine()) + '</div>';
+  h += '</div></div>';
+
+  h += part1(m) + part2(m) + part3(m) + part4(m) + part5(m) + appendix(m);
+
+  h += '<div class="wrap"><div class="closing"><div class="dotfield"></div>';
+  h += '<p class="eyebrow on-dark" style="position:relative;z-index:2">The next step</p>';
+  h += '<h3 style="position:relative;z-index:2">A conversation about the screens, not a quote</h3>';
+  h += '<p style="position:relative;z-index:2;max-width:62ch">Bring this report and bring whoever actually changes the screens, not only the person who reports on them. Brian Fitzpatrick puts it plainly: his team does not sell people anything, it works out the outcome you are after and puts the least technology with the fewest failure points behind it.</p>';
+  h += '<p style="position:relative;z-index:2;max-width:62ch">Their seven phases describe what it takes to run an estate. This told you what yours is saying this week. The conversation is where those two meet.</p>';
+  h += '<div class="cta-row"><a class="btn" href="https://www.onerevel.com/#contact" target="_blank" rel="noopener">Talk to OneRevel</a>';
+  h += '<button class="btn ghost" id="dl-btn">Download this report</button>';
+  h += '<button class="btn ghost" id="pr-btn">Print it</button>';
+  h += '<button class="btn ghost" id="again-btn">Start again</button></div></div>';
+
+  h += '<div class="foot"><strong>Honest by design, even where it costs the sale.</strong> Every figure above is computed from answers you gave. Scores come only from tapped answers. Typed answers are quoted and never scored. Not sure is recorded as Not sure and nothing is substituted for it. No OneRevel price appears anywhere in this report, and the count is never converted into money. One gap in the fix map names no OneRevel module at all, because it is not theirs to close. Download saves a copy of this page, and the button above opens onerevel.com.';
+  h += '<br><br>OneRevel · The Screen Time Check · Prepared ' + todayStr() + ' · Built for OneRevel by Navvai</div></div>';
+
+  host.innerHTML = h;
+  bindReport(m);
+}
+
+function bindReport(m){
+  var ls = byId("lev-screens"), lh = byId("lev-share"), lr = byId("lev-reset");
+  function recalc(){
+    var sc = Number(ls.value), sh = Number(lh.value)/100;
+    byId("lev-screens-v").textContent = n0(sc);
+    byId("lev-share-v").textContent = Math.round(sh*100) + "%";
+    byId("lev-out").textContent = n0(Math.round(sc*sh));
+  }
+  if(ls && lh){
+    ls.addEventListener("input", recalc);
+    lh.addEventListener("input", recalc);
+    ls.addEventListener("change", function(){ STATE.lev.screens = Number(ls.value); });
+    lh.addEventListener("change", function(){ STATE.lev.share = Number(lh.value)/100; });
+  }
+  if(lr) lr.addEventListener("click", function(){
+    STATE.lev.screens = m.screens; STATE.lev.share = m.share;
+    ls.value = String(m.screens); lh.value = String(Math.round(m.share*100)); recalc();
+  });
+  var dl = byId("dl-btn");
+  if(dl) dl.addEventListener("click", function(){
+    try{
+      var blob = new Blob(["<!DOCTYPE html>" + document.documentElement.outerHTML], { type:"text/html" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "screen-time-check.html"; a.click();
+    }catch(e){ window.print(); }
+  });
+  var pr = byId("pr-btn"); if(pr) pr.addEventListener("click", function(){ window.print(); });
+  var ag = byId("again-btn"); if(ag) ag.addEventListener("click", function(){
+    STATE.answers = {}; STATE.idx = 0; STATE.lev = {}; STATE.lead = {}; STATE.goalText = "";
+    show("home"); drawQuestion(); heroSet(18); if(window.scrollTo) window.scrollTo(0,0);
+  });
+  if(typeof window !== "undefined" && window.addEventListener){
+    window.addEventListener("resize", function(){ /* report chart redraw on resize is not needed inline */ });
+  }
+}
+
+/* ===================== LEAD ===================== */
+function leadPayload(m){
+  var answers = [];
+  QUESTIONS.forEach(function(q){
+    var o = optOf(q);
+    if(!o && !(q.type === "goal" && STATE.goalText)) return;
+    answers.push({ question:q.prompt, answer:(q.type === "goal" && STATE.goalText) ? STATE.goalText : o.t });
+  });
+  return {
+    name:STATE.lead.name || "", org:STATE.lead.org || "", email:STATE.lead.email || "",
+    seat:m.seatLabel,
+    verdict:m.band ? m.band.name : "Nothing scored",
+    weakest:m.weakest ? m.weakest.name : null,
+    weakest_score:m.weakest ? Number(one(m.weakest.score)) : null,
+    overall:m.avg === null ? null : Number(one(m.avg)),
+    screens:m.screens, share:m.share, count:m.count,
+    gaps:m.gaps.map(function(g){ return { area:g.area, question:g.prompt, answer:g.answer, score:Number(one(g.score)), severity:g.severity }; }),
+    notSure:m.notSure,
+    goal:m.goalText,
+    answers:answers,
+    areas:m.areas.map(function(a){ return { name:a.name, score:a.score === null ? null : Number(one(a.score)) }; }),
+    fit:m.fit,
+    created:new Date().toISOString()
+  };
+}
+
+function postLead(m){
+  try{
+    if(typeof fetch !== "function") return;
+    if(typeof location === "undefined" || location.protocol.indexOf("http") !== 0) return;
+    fetch("/api/lead", {
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(leadPayload(m))
+    }).catch(function(){});
+  }catch(e){}
+}
+
+function loadConfig(){
+  try{
+    if(typeof fetch !== "function") return;
+    if(typeof location === "undefined" || location.protocol.indexOf("http") !== 0) return;
+    fetch("/api/config").then(function(r){ return r.json(); }).then(function(j){ STATE.cfg = j; }).catch(function(){});
+  }catch(e){}
+}
+
+/* ===================== INIT ===================== */
+(function init(){
+  var sb = byId("start-btn"), sb2 = byId("start-btn-2"), sw = byId("skip-to-what");
+  function go(){ show("quiz"); drawQuestion(); if(window.scrollTo) window.scrollTo(0,0); }
+  if(sb) sb.addEventListener("click", go);
+  if(sb2) sb2.addEventListener("click", go);
+  if(sw) sw.addEventListener("click", function(){
+    var t = byId("what-it-asks");
+    if(t && t.scrollIntoView) t.scrollIntoView({ behavior:"smooth" });
+  });
+
+  var sl = byId("hero-slider");
+  if(sl) sl.addEventListener("input", function(){ if(heroState.timer){ clearInterval(heroState.timer); heroState.timer = null; } heroSet(Number(sl.value)); });
+  if(typeof window !== "undefined" && window.addEventListener){
+    window.addEventListener("resize", function(){ renderHero(); });
+  }
+  renderHero();
+  if(typeof setInterval === "function") heroAnimate();
+
+  bindQuiz();
+
+  var lg = byId("l-go");
+  if(lg) lg.addEventListener("click", function(){
+    var em = byId("l-email"), err = byId("l-err");
+    var v = em ? em.value.trim() : "";
+    if(!v || v.indexOf("@") < 1 || v.indexOf(".") < 0){
+      if(err){ err.textContent = "A work email address is needed so the report can be addressed properly."; err.style.display = "block"; }
+      return;
+    }
+    if(err) err.style.display = "none";
+    STATE.lead = {
+      name:(byId("l-name") ? byId("l-name").value.trim() : ""),
+      org:(byId("l-org") ? byId("l-org").value.trim() : ""),
+      email:v
+    };
+    var m = buildModel();
+    postLead(m);
+    drawReport(m);
+    show("report");
+    if(window.scrollTo) window.scrollTo(0,0);
+  });
+
+  loadConfig();
+})();
+
+/* ===================== test hook ===================== */
+window.__DIAGNOSTIC__ = {
+  STATE:STATE, QUESTIONS:QUESTIONS, AREAS:AREAS, SEATS:SEATS, BANDS:BANDS, MODULES:MODULES,
+  buildModel:buildModel, drawReport:drawReport, leadPayload:leadPayload, fitRead:fitRead, show:show,
+  renderHero:renderHero, heroModel:heroModel, heroSet:heroSet, trajectorySvg:trajectorySvg,
+  setAnswer:function(qid, i){ STATE.answers[qid] = i; },
+  setGoalText:function(t){ STATE.goalText = t; },
+  reset:function(){ STATE.answers = {}; STATE.idx = 0; STATE.lev = {}; STATE.lead = {}; STATE.goalText = ""; }
+};
+</script>
+</body>
+</html>
