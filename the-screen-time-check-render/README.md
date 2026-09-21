@@ -1,6 +1,7 @@
-# The Screen Time Check
+# The Static Check
 
-A lead magnet diagnostic for OneRevel. Built by Navvai.
+A ninety second lead magnet for OneRevel, aimed at venue owners with a project on the table.
+Eight markers of static thinking, one screen of result. Built by Navvai.
 
 ## Read this first, it is the one thing that breaks deploys
 

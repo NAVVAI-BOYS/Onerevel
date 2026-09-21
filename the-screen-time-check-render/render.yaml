@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: screen-time-check
+    name: static-check
     runtime: python
     plan: starter
     buildCommand: pip install -r requirements.txt

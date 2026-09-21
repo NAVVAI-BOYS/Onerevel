@@ -1,4 +1,4 @@
-"""The Screen Time Check, by OneRevel. Lead capture behind the diagnostic.
+"""The Static Check, by OneRevel. Lead capture behind the diagnostic.
 
 Storage is a convenience, never a startup dependency: leads land in three places
 (stdout, a JSON file, and optionally email) so no single one can take the app down.
@@ -36,7 +36,7 @@ def pick_data_dir():
         (REQUESTED_DATA_DIR, "DATA_DIR / default mount"),
         ("/var/data", "conventional Render disk"),
         (os.path.join(APP_DIR, "data"), "directory beside app.py"),
-        ("/tmp/screen-time-check", "ephemeral tmp"),
+        ("/tmp/static-check", "ephemeral tmp"),
     ]
     seen = set()
     for path, label in candidates:
@@ -92,7 +92,7 @@ def send_email(rec):
     if not (RESEND_API_KEY and LEAD_TO):
         return
     lines = [
-        "New Screen Time Check lead",
+        "New Static Check lead",
         "",
         "Name:     %s" % rec.get("name", ""),
         "Company:  %s" % rec.get("org", ""),
@@ -100,28 +100,28 @@ def send_email(rec):
         "Seat:     %s" % rec.get("seat", ""),
         "",
         "Verdict:  %s" % rec.get("verdict", ""),
-        "Weakest:  %s (%s of 10)" % (rec.get("weakest"), rec.get("weakest_score")),
-        "Screens:  %s" % rec.get("screens"),
-        "Stale:    %s" % rec.get("count"),
+        "Worst:    %s" % rec.get("worst"),
+        "Markers:  %s of 8" % rec.get("markers"),
+        "Stage:    %s" % rec.get("stage"),
         "Fit:      %s (%s points)" % ((rec.get("fit") or {}).get("band"), (rec.get("fit") or {}).get("points")),
         "Motion:   %s" % (rec.get("fit") or {}).get("motion"),
         "",
-        "Goal: %s" % rec.get("goal", ""),
-        "",
-        "Gaps:",
+        "Markers raised, worst first:",
     ]
-    for g in rec.get("gaps", []):
-        lines.append("  [%s] %s  ->  %s (%s)" % (g.get("severity"), g.get("area"), g.get("answer"), g.get("score")))
-    if rec.get("notSure"):
+    for g in rec.get("flags", []) or []:
+        lines.append("  %s. %s  ->  %s" % (g.get("rank"), g.get("marker"), g.get("answer")))
+    if not rec.get("flags"):
+        lines.append("  none")
+    if rec.get("clear"):
         lines.append("")
-        lines.append("Did not know:")
-        for q in rec["notSure"]:
-            lines.append("  " + q)
+        lines.append("Already right:")
+        for c in rec["clear"]:
+            lines.append("  " + str(c.get("marker", "")))
     body = "\n".join(lines)
     payload = json.dumps({
         "from": LEAD_FROM,
         "to": [LEAD_TO],
-        "subject": "Screen Time Check: %s at %s (%s)" % (
+        "subject": "Static Check: %s at %s (%s)" % (
             rec.get("name", "unknown"), rec.get("org", "unknown"), (rec.get("fit") or {}).get("band", "")),
         "text": body,
     }).encode("utf-8")
@@ -133,10 +133,6 @@ def send_email(rec):
         print("[email] sent to %s" % LEAD_TO, flush=True)
     except Exception as exc:
         print("[email] FAILED: %s" % exc, flush=True)
-
-
-def rounded(v):
-    return None if v is None else round(float(v), 1)
 
 
 @app.route("/healthz")
@@ -156,19 +152,14 @@ def api_config():
 @app.route("/api/lead", methods=["POST"])
 def api_lead():
     rec = request.get_json(silent=True) or {}
-    rec["weakest_score"] = rounded(rec.get("weakest_score"))
-    rec["overall"] = rounded(rec.get("overall"))
-    for g in rec.get("gaps", []) or []:
-        g["score"] = rounded(g.get("score"))
-    for a in rec.get("areas", []) or []:
-        a["score"] = rounded(a.get("score"))
+    rec["markers"] = int(rec.get("markers") or 0)
     rec["received"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     rec["ip"] = request.headers.get("X-Forwarded-For", request.remote_addr or "")
 
     fit = rec.get("fit") or {}
-    print("LEAD %s | %s | %s | %s | %s | weakest %s | screens %s | stale %s" % (
+    print("LEAD %s | %s | %s | %s | %s | %s of 8 markers | worst: %s | stage: %s" % (
         fit.get("band", "?"), rec.get("name", ""), rec.get("org", ""), rec.get("email", ""),
-        rec.get("verdict", ""), rec.get("weakest", ""), rec.get("screens"), rec.get("count")), flush=True)
+        rec.get("verdict", ""), rec.get("markers"), rec.get("worst", ""), rec.get("stage", "")), flush=True)
 
     stored = False
     try:
@@ -205,7 +196,7 @@ def admin_leads():
     out = []
     out.append("<!DOCTYPE html><html><head><meta charset='utf-8'>")
     out.append("<meta name='viewport' content='width=device-width, initial-scale=1'>")
-    out.append("<title>Screen Time Check leads</title><style>")
+    out.append("<title>Static Check leads</title><style>")
     out.append("body{background:#161A18;color:#F2F3F1;font-family:Helvetica,Arial,sans-serif;margin:0;padding:24px;font-size:14px}")
     out.append("h1{font-size:22px;margin:0 0 4px}.sub{color:#8A918D;margin:0 0 18px}")
     out.append("a{color:#7FCB42}.warn{background:#4A2B12;border:1px solid #B8860B;padding:12px 14px;border-radius:8px;margin:0 0 18px}")
@@ -216,7 +207,7 @@ def admin_leads():
     out.append(".m{color:#8A918D;font-size:12.5px;margin:6px 0}.q{color:#C6CCC8;font-style:italic}")
     out.append("ul{margin:6px 0;padding-left:18px}li{margin-bottom:3px;color:#C6CCC8}")
     out.append("</style></head><body>")
-    out.append("<h1>The Screen Time Check</h1>")
+    out.append("<h1>The Static Check</h1>")
     out.append("<p class='sub'>" + str(len(leads)) + " leads, best fit first. <a href='/admin/leads.csv?key="
                + request.args.get("key", "") + "'>Download CSV</a></p>")
 
@@ -238,25 +229,20 @@ def admin_leads():
         out.append("<span class='b " + band + "'>" + band + " " + str(fit.get("points", "")) + "</span> ")
         out.append("<b>" + str(r.get("name", "")) + "</b> at <b>" + str(r.get("org", "")) + "</b> &middot; ")
         out.append("<a href='mailto:" + str(r.get("email", "")) + "'>" + str(r.get("email", "")) + "</a>")
-        out.append("<p class='m'>" + str(r.get("received", "")) + " &middot; " + str(r.get("seat", "")) + "</p>")
-        out.append("<p class='m'><b>" + str(r.get("verdict", "")) + "</b> &middot; weakest " + str(r.get("weakest", ""))
-                   + " at " + str(r.get("weakest_score", "")) + " of 10 &middot; " + str(r.get("screens", "?"))
-                   + " screens &middot; " + str(r.get("count", "?")) + " on an old message</p>")
-        if r.get("goal"):
-            out.append("<p class='m'>Goal: <span class='q'>" + str(r.get("goal")) + "</span></p>")
+        out.append("<p class='m'>" + str(r.get("received", "")) + " &middot; " + str(r.get("role", "")) + "</p>")
+        out.append("<p class='m'><b>" + str(r.get("verdict", "")) + "</b> &middot; " + str(r.get("markers", "?"))
+                   + " of 8 markers &middot; worst: " + str(r.get("worst", "none")) + "</p>")
+        if r.get("stage"):
+            out.append("<p class='m'>Stage: <span class='q'>" + str(r.get("stage")) + "</span></p>")
         if fit.get("motion"):
             out.append("<p class='m'>Motion: " + str(fit.get("motion")) + "</p>")
-        if r.get("gaps"):
-            out.append("<p class='m'>Worst answers:</p><ul>")
-            for g in r["gaps"][:4]:
-                out.append("<li>[" + str(g.get("severity")) + "] " + str(g.get("area")) + ": <span class='q'>"
-                           + str(g.get("answer")) + "</span> (" + str(g.get("score")) + ")</li>")
+        if r.get("flags"):
+            out.append("<p class='m'>Markers raised, worst first:</p><ul>")
+            for g in r["flags"][:4]:
+                out.append("<li>" + str(g.get("marker")) + ": <span class='q'>" + str(g.get("answer")) + "</span></li>")
             out.append("</ul>")
-        if r.get("notSure"):
-            out.append("<p class='m'>Did not know:</p><ul>")
-            for q in r["notSure"][:5]:
-                out.append("<li>" + str(q) + "</li>")
-            out.append("</ul>")
+        if r.get("clear"):
+            out.append("<p class='m'>Already right: " + str(len(r["clear"])) + " of 8</p>")
         out.append("</div>")
 
     out.append("</body></html>")
@@ -269,19 +255,16 @@ def admin_csv():
         return Response("unauthorised", status=401)
     buf = io.StringIO()
     w = csv.writer(buf)
-    w.writerow(["received", "fit_band", "fit_points", "name", "org", "email", "seat",
-                "verdict", "weakest", "weakest_score", "overall", "screens", "share",
-                "stale_count", "gap_count", "not_sure_count", "goal", "motion"])
+    w.writerow(["received", "fit_band", "fit_points", "name", "org", "email", "role",
+                "verdict", "markers_of_8", "worst_marker", "stage", "already_right", "motion"])
     for r in sorted_leads():
         fit = r.get("fit") or {}
         w.writerow([r.get("received", ""), fit.get("band", ""), fit.get("points", ""),
-                    r.get("name", ""), r.get("org", ""), r.get("email", ""), r.get("seat", ""),
-                    r.get("verdict", ""), r.get("weakest", ""), r.get("weakest_score", ""),
-                    r.get("overall", ""), r.get("screens", ""), r.get("share", ""),
-                    r.get("count", ""), len(r.get("gaps", []) or []), len(r.get("notSure", []) or []),
-                    r.get("goal", ""), fit.get("motion", "")])
+                    r.get("name", ""), r.get("org", ""), r.get("email", ""), r.get("role", ""),
+                    r.get("verdict", ""), r.get("markers", ""), r.get("worst", ""),
+                    r.get("stage", ""), len(r.get("clear", []) or []), fit.get("motion", "")])
     return Response(buf.getvalue(), mimetype="text/csv",
-                    headers={"Content-Disposition": "attachment; filename=screen-time-check-leads.csv"})
+                    headers={"Content-Disposition": "attachment; filename=static-check-leads.csv"})
 
 
 @app.route("/")
